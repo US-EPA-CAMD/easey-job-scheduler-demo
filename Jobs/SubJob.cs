@@ -2,12 +2,12 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-using Quartz;
 using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
+using Quartz;
 
-namespace EPA.CAMPD.Scheduler
+namespace Epa.Camd.Easey.JobScheduler.Jobs
 {
   public class SubJob : IJob
   {

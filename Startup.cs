@@ -1,18 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+
 using Quartz;
 
-namespace EPA.CAMPD.Scheduler
+using Epa.Camd.Easey.JobScheduler.Jobs;
+using Epa.Camd.Easey.RulesApi.Models;
+
+namespace Epa.Camd.Easey.JobScheduler
 {
     public class Startup
     {
@@ -26,48 +23,56 @@ namespace EPA.CAMPD.Scheduler
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddControllers();
+            //services.AddScoped<NpgSqlContext>();
+
+            services.AddDbContext<NpgSqlContext>(options => 
+                options.UseNpgsql(Configuration.GetConnectionString("Epa.Camd.Postgres"))
+            );
 
             // base configuration from appsettings.json
-            services.Configure<QuartzOptions>(Configuration.GetSection("Quartz"));            
+            services.Configure<QuartzOptions>(Configuration.GetSection("Quartz"));
 
             services.AddQuartz(q =>
             {
                 // base quartz scheduler, job and trigger configuration
 
                 // handy when part of cluster or you want to otherwise identify multiple schedulers
-                q.SchedulerId = "Main";
+                q.SchedulerId = "AUTO";
 
                 // we could leave DI configuration intact and then jobs need to have public no-arg constructor
                 // the MS DI is expected to produce transient job instances 
-                q.UseMicrosoftDependencyInjectionJobFactory(options =>
-                {
-                    // if we don't have the job in DI, allow fallback to configure via default constructor
-                    options.AllowDefaultConstructor = true;
-                });
+                //q.UseMicrosoftDependencyInjectionJobFactory(options =>
+                //{
+                //    // if we don't have the job in DI, allow fallback to configure via default constructor
+                //    options.AllowDefaultConstructor = true;
+                //});
     
                 // or 
-                // q.UseMicrosoftDependencyInjectionScopedJobFactory();                
+                q.UseMicrosoftDependencyInjectionScopedJobFactory();
 
                 // these are the defaults
                 q.UseSimpleTypeLoader();
                 q.UseInMemoryStore();
                 q.UseDefaultThreadPool(tp => {
-                    tp.MaxConcurrency = 10;
+                    tp.MaxConcurrency = 25;
                 });
 
-                q.ScheduleJob<MainJob>(trigger => trigger
-                    .WithIdentity("MainJob")
-                    .StartNow()
-                    .WithSimpleSchedule(x => x
-                        .WithRepeatCount(0)
-                    )
-                    //.WithCronSchedule("0 0 * ? * *")
-                    //.StartAt(DateBuilder.EvenSecondDate(DateTimeOffset.UtcNow.AddSeconds(7)))
-                    //.WithDailyTimeIntervalSchedule(x => x.WithInterval(10, IntervalUnit.Second))
-                    .WithDescription("my awesome trigger configured for a job with single call")
-                );
+                // q.ScheduleJob<MainJob>(trigger => trigger
+                //     .WithIdentity("MainJob")
+                //     .StartNow()
+                //     .WithSimpleSchedule(x => x
+                //         .WithRepeatCount(0)
+                //     )
+                // );
+
+                q.ScheduleJob<CheckEngine>(trigger => trigger
+                    .WithIdentity("Check Engine")
+                    .WithDailyTimeIntervalSchedule(x => x.WithInterval(1, IntervalUnit.Minute))
+                    .WithDescription("Check Engine will poll submission queue every 60 seconds and schedule submission processes.")
+                );                
             });
+
+            services.AddTransient<MonitorPlanEvaluation>();
 
             // ASP.NET Core hosting
             services.AddQuartzServer(options =>

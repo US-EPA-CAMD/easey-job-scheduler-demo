@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 using Quartz;
 
-namespace EPA.CAMPD.Scheduler
+namespace Epa.Camd.Easey.JobScheduler.Jobs
 {
   public class MainJob : IJob
   {
