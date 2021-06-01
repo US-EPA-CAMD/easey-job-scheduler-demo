@@ -13,6 +13,7 @@ using NpgsqlTypes;
 using Quartz.Impl.AdoJobStore.Common;
 using System;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Epa.Camd.Easey.JobScheduler
 {
@@ -52,22 +53,22 @@ namespace Epa.Camd.Easey.JobScheduler
             string connectionString = $"server={host};port={port};user id={user};password={password};database={db};pooling=true";
             //services.AddScoped<NpgSqlContext>();
 
-
+            
 
 
             services.AddDbContext<NpgSqlContext>(options =>
                 options.UseNpgsql(connectionString)
             );
 
-          
+
             //DbconfigManager
+        
 
             // base configuration from appsettings.json
             services.Configure<QuartzOptions>(Configuration.GetSection("Quartz"));
 
             services.AddQuartz(q =>
             {
-
 
 
                 DbProvider.RegisterDbMetadata("Npgsql-30", new DbMetadata
@@ -89,42 +90,26 @@ namespace Epa.Camd.Easey.JobScheduler
                 q.SchedulerId = "AUTO";
 
 
-                // we could leave DI configuration intact and then jobs need to have public no-arg constructor
-                // the MS DI is expected to produce transient job instances 
-                //q.UseMicrosoftDependencyInjectionJobFactory(options =>
-                //{
-                //    // if we don't have the job in DI, allow fallback to configure via default constructor
-                //    options.AllowDefaultConstructor = true;
-                //});
-
+          
                 // or 
                 q.UseMicrosoftDependencyInjectionScopedJobFactory();
 
                 // these are the defaults
-                //  q.UseSimpleTypeLoader();
-                q.SetProperty("quartz.serializer.type", "binary");
-                q.SetProperty("quartz.scheduler.instanceName", "QuartzWithCore");
-                q.SetProperty("quartz.scheduler.instanceId", "QuartzWithCore");
-                q.SetProperty("quartz.jobStore.type", "Quartz.Impl.AdoJobStore.JobStoreTX, Quartz");
-                q.SetProperty("quartz.jobStore.driverDelegateType", "Quartz.Impl.AdoJobStore.StdAdoDelegate, Quartz");
-                q.SetProperty("quartz.jobStore.dataSource", "default");
-                q.SetProperty("quartz.dataSource.default.connectionString", connectionString);
-                q.SetProperty("quartz.dataSource.default.provider", "Npgsql-30");
-                q.SetProperty("quartz.jobStore.tablePrefix", "camdaux.qrtz_");
+              
+               var QuartzConfig=  Configuration.GetSection("Quartz").GetChildren().GetEnumerator();
+
+                while (QuartzConfig.MoveNext())
+                {
+                    q.SetProperty(QuartzConfig.Current.Key.ToString(), QuartzConfig.Current.Value.ToString());
+                }
+
+
 
                 q.UseDefaultThreadPool(tp => {
                     tp.MaxConcurrency = 25;
                 });
 
-                // q.ScheduleJob<MainJob>(trigger => trigger
-                //     .WithIdentity("MainJob")
-                //     .StartNow()
-                //     .WithSimpleSchedule(x => x
-                //         .WithRepeatCount(0)
-                //     )
-                // );
-
-                Console.WriteLine(Configuration.GetConnectionString("Epa.Camd.Postgres"));
+           
 
                 q.ScheduleJob<CheckEngine>(trigger => trigger
                     .WithIdentity("Check Engine")
