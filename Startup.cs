@@ -1,34 +1,29 @@
+using System.Collections.Generic;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-using Quartz;
-
-using Epa.Camd.Easey.JobScheduler.Jobs;
-using Epa.Camd.Easey.RulesApi.Models;
-using Npgsql;
-using NpgsqlTypes;
-using Quartz.Impl.AdoJobStore.Common;
-using System;
+using SilkierQuartz;
 using Newtonsoft.Json;
-using System.Collections.Generic;
+
+using Epa.Camd.Easey.RulesApi.Models;
+using Epa.Camd.Easey.JobScheduler.Jobs;
 
 namespace Epa.Camd.Easey.JobScheduler
 {
     public class Startup
     {
+        private string connectionString;
+        private IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-        }
 
-        public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
             int port = 5432;
             int.TryParse(Configuration["EASEY_DB_PORT"], out port);
 
@@ -50,102 +45,89 @@ namespace Epa.Camd.Easey.JobScheduler
                 db = vcapSvcCreds.name;
             }
 
-            string connectionString = $"server={host};port={port};user id={user};password={password};database={db};pooling=true";
-            //services.AddScoped<NpgSqlContext>();
+            connectionString = $"server={host};port={port};user id={user};password={password};database={db};pooling=true";
+        }
 
-            
-
-
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
             services.AddDbContext<NpgSqlContext>(options =>
                 options.UseNpgsql(connectionString)
             );
 
+            services.AddRazorPages();
+            services.AddControllers();
 
-            //DbconfigManager
-        
+            services.AddSilkierQuartz(q => {
+                var quartzConfig = Configuration.GetSection("Quartz").GetChildren().GetEnumerator();
 
-            // base configuration from appsettings.json
-            services.Configure<QuartzOptions>(Configuration.GetSection("Quartz"));
-
-            services.AddQuartz(q =>
-            {
-
-
-                DbProvider.RegisterDbMetadata("Npgsql-30", new DbMetadata
+                while (quartzConfig.MoveNext())
                 {
-                    AssemblyName = typeof(NpgsqlConnection).Assembly.FullName,
-                    BindByName = true,
-                    ConnectionType = typeof(NpgsqlConnection),
-                    CommandType = typeof(NpgsqlCommand),
-                    ParameterType = typeof(NpgsqlParameter),
-                    ParameterDbType = typeof(NpgsqlDbType),
-                    ParameterDbTypePropertyName = "NpgsqlDbType",
-                    ParameterNamePrefix = ":",
-                    ExceptionType = typeof(NpgsqlException),
-                    UseParameterNamePrefixInParameterCollection = true
-                });
-                // base quartz scheduler, job and trigger configuration
-
-                // handy when part of cluster or you want to otherwise identify multiple schedulers
-                q.SchedulerId = "AUTO";
-
-
-          
-                // or 
-                q.UseMicrosoftDependencyInjectionScopedJobFactory();
-
-                // these are the defaults
-              
-               var QuartzConfig=  Configuration.GetSection("Quartz").GetChildren().GetEnumerator();
-
-                while (QuartzConfig.MoveNext())
-                {
-                    q.SetProperty(QuartzConfig.Current.Key.ToString(), QuartzConfig.Current.Value.ToString());
+                    q.Add(quartzConfig.Current.Key, quartzConfig.Current.Value);
                 }
-
-
-
-                q.UseDefaultThreadPool(tp => {
-                    tp.MaxConcurrency = 25;
-                });
-
-           
-
-                q.ScheduleJob<CheckEngine>(trigger => trigger
-                    .WithIdentity("Check Engine")
-                    .WithDailyTimeIntervalSchedule(x => x.WithInterval(1, IntervalUnit.Minute))
-                    .WithDescription("Check Engine will poll submission queue every 60 seconds and schedule submission processes.")
-                );
+                q.Add("quartz.dataSource.default.connectionString", connectionString);
+            }, () => {
+                var type = typeof(HelloJob);
+                var assembly = Assembly.GetAssembly(typeof(HelloJob));
+                var list = new List<Assembly>();
+                list.Add(assembly);
+                return list;
             });
 
-            services.AddTransient<MonitorPlanEvaluation>();
+            // services.AddQuartzJob<HelloJob>()
+            //         .AddQuartzJob<HelloJobAuto>()
+            //         .AddQuartzJob<HelloJobSingle>();
 
-            // ASP.NET Core hosting
-            services.AddQuartzServer(options =>
-            {
-                // when shutting down we want jobs to complete gracefully
-                options.WaitForJobsToComplete = true;
-            });
+            //services.AddTransient<MonitorPlanEvaluation>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // if (env.IsDevelopment())
-            // {
-            //     app.UseDeveloperExceptionPage();
-            // }
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+            }
 
-            // app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseRouting();
 
-            // app.UseRouting();
+            app.UseAuthentication();
+            app.UseSilkierQuartzAuthentication() ;
+            app.UseAuthorization();
 
-            // app.UseAuthorization();
+            app.UseSilkierQuartz(
+                new SilkierQuartzOptions()
+                {
+                    //Logo = "data:wwwroot/EPALogo.svg",
+                    //ProductName = "EPA CAMD Quartz Scheduler",
+                    //Scheduler = StdSchedulerFactory.GetDefaultScheduler().Result,
+                    VirtualPathRoot = "/quartz",
+                    UseLocalTime = true,
+                    DefaultDateFormat = "yyyy-MM-dd",
+                    DefaultTimeFormat = "HH:mm:ss",
+                    CronExpressionOptions = new CronExpressionDescriptor.Options()
+                    {
+                        DayOfWeekStartIndexZero = false //Quartz uses 1-7 as the range
+                    }
+                    #if ENABLE_AUTH
+                        ,
+                        AccountName = "admin",
+                        AccountPassword = "password",
+                        IsAuthenticationPersist = false
+                    #endif
+                }
+            );
 
-            // app.UseEndpoints(endpoints =>
-            // {
-            //     endpoints.MapControllers();
-            // });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapRazorPages();
+                endpoints.MapControllers();
+            });
         }
     }
 }

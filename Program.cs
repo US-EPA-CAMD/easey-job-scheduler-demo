@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
+using SilkierQuartz;
+
 namespace Epa.Camd.Easey.JobScheduler
 {
     public class Program
@@ -15,6 +17,7 @@ namespace Epa.Camd.Easey.JobScheduler
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                .ConfigureSilkierQuartzHost();
     }
 }

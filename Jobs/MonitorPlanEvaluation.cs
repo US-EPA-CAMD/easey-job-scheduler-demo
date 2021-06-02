@@ -1,13 +1,21 @@
 using System;
+using System.Data;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Quartz;
+using Npgsql;
+using NpgsqlTypes;
 
 namespace Epa.Camd.Easey.RulesApi.Models
 {
   public class MonitorPlanEvaluation : IJob
   {
     private NpgSqlContext _dbContext = null;
+
+    public int Id { private get; set; }
+
+    public string MonitorPlanId { private get; set; }
 
     public MonitorPlanEvaluation(NpgSqlContext dbContext)
     {
@@ -16,19 +24,33 @@ namespace Epa.Camd.Easey.RulesApi.Models
 
     public async Task Execute(IJobExecutionContext context)
     {
-      JobDataMap dataMap = context.JobDetail.JobDataMap;
-      int id = dataMap.GetInt("id");
-      await Console.Out.WriteLineAsync($"Monitor Plan Evaluation process started for Id {id}...");
+      try {
+        JobKey key = context.JobDetail.Key;
+        JobDataMap dataMap = context.MergedJobDataMap;
 
-      CheckQueue item = _dbContext.Submissions.Find(id);
+        this.Id = dataMap.GetInt("Id");
+		    this.MonitorPlanId = dataMap.GetString("MonitorPlanId");        
 
-      System.Threading.Thread.Sleep(new Random(12654879).Next(5000, 30000));
+        await Console.Out.WriteLineAsync($"{key.Group} process started for {key.Name}...");
 
-      item.StatusCode = "Complete";
-      _dbContext.Submissions.Update(item);
-      _dbContext.SaveChanges();
+        CheckQueue item = _dbContext.Submissions.Find(this.Id);
 
-      await Console.Out.WriteLineAsync($"Monitor Plan Evaluation process ended for Id {id}...");
+        System.Threading.Thread.Sleep(30000);
+
+        //List<NpgsqlParameter> paramList = new List<NpgsqlParameter>();
+        //paramList.Add(_dbContext.CreateParameter('monPlanID', '', NpgsqlDbType.Text, ParameterDirection.Input));
+        //NpgsqlCommand command = _dbContext.ExecuteProcedure('camdecmps.getinitialvalues', paramList);
+
+        item.StatusCode = "Complete";
+        _dbContext.Submissions.Update(item);
+        _dbContext.SaveChanges();
+
+        await Console.Out.WriteLineAsync($"{key.Group} process ended for {key.Name}...");
+      }
+      catch(Exception ex)
+      {
+        Console.WriteLine(ex.ToString());
+      }
     }
   }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 using Quartz;
 
@@ -20,37 +21,50 @@ namespace Epa.Camd.Easey.JobScheduler.Jobs
 
     public async Task Execute(IJobExecutionContext context)
     {
-      await Console.Out.WriteLineAsync($"Check Engine checking submission queue for work...");
-      List<CheckQueue> submissions = _dbContext.Submissions.Where(item => item.StatusCode == "Submitted").ToList();
+      try {
+        await Console.Out.WriteLineAsync($"Check Engine checking submission queue for work...");
 
-      if (submissions.Count > 0)
-        await Console.Out.WriteLineAsync($"...scheduling {submissions.Count} submissions immediately");
-      else
-        await Console.Out.WriteLineAsync($"...no submissions to schedule");
+        List<CheckQueue> submissions = _dbContext.Submissions.FromSqlRaw(
+          @"SELECT * FROM camdecmpsaux.check_queue_evaluations_to_process({0})",
+          Guid.Parse(context.Scheduler.SchedulerInstanceId)
+        ).ToList();
 
-      foreach(var item in submissions)
-      {
-        item.StatusCode = "Processing";
-        _dbContext.Submissions.Update(item);
-        _dbContext.SaveChanges();
+        if (submissions.Count > 0)
+          await Console.Out.WriteLineAsync($"...scheduling {submissions.Count} submissions immediately");
+        else
+          await Console.Out.WriteLineAsync($"...no submissions to schedule");
 
-        string key = $"Monitor Plan {item.Id} Evaluation";
-        IJobDetail job = JobBuilder.Create<MonitorPlanEvaluation>()
-          .WithIdentity(key)
-          .UsingJobData("id", item.Id)
-          .Build();
+        foreach(var item in submissions)
+        {
+          item.StatusCode = "Processing";
+          _dbContext.Submissions.Update(item);
+          _dbContext.SaveChanges();
 
-        ITrigger trigger = TriggerBuilder.Create()
-          .WithIdentity(key)
-          .StartNow()
-          .WithSimpleSchedule(x => x
-            .WithRepeatCount(0)
-          ).Build();
+          string group = $"Check Engine Evaluation";
+          string key = $"submitted check queue item [{item.Id}] Monitor Plan {item.MonitorPlanId}";
 
-        await context.Scheduler.ScheduleJob(job, trigger);
+          IJobDetail job = JobBuilder.Create<MonitorPlanEvaluation>()
+            .WithIdentity(key, group)
+            .UsingJobData("Id", item.Id)
+            .UsingJobData("MonitorPlanId", item.MonitorPlanId)
+            .Build();
+
+          ITrigger trigger = TriggerBuilder.Create()
+            .WithIdentity(key, group)
+            .StartNow()
+            .WithSimpleSchedule(x => x
+              .WithRepeatCount(0)
+            ).Build();
+
+          await context.Scheduler.ScheduleJob(job, trigger);
+        }
+
+        await Console.Out.WriteLineAsync($"Check Engine process ended...");
       }
-
-      await Console.Out.WriteLineAsync($"Check Engine process ended...");      
+      catch(Exception ex)
+      {
+        Console.WriteLine(ex.ToString());
+      }
     }
   }
 }
