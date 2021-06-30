@@ -125,8 +125,7 @@ namespace Epa.Camd.Easey.JobScheduler
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
-                endpoints.MapControllers();
+              endpoints.MapControllers();
             });
         }
     }
