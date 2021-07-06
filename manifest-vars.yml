@@ -1,7 +1,0 @@
-#THIS FILE SHOULD CONTAIN DEV SETTINGS AND CI/CD WORKFLOW WILL CHANGE SETTINGS BASED ON ENV
-name: job-scheduler
-title: Quartz Job Scheduler
-path: scheduler
-environment: development
-host: easey-dev.app.cloud.gov
-memory: 512M
