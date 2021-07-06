@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
 using System.Runtime.Remoting;
-
+using System.Threading.Tasks;
 using ECMPS.Checks.CheckEngine.Definitions;
 using ECMPS.Checks.DatabaseAccess;
 using ECMPS.Checks.Parameters;
@@ -14,6 +14,7 @@ using ECMPS.Common;
 using ECMPS.Definitions.Extensions;
 using ECMPS.Definitions.SeverityCode;
 using ECMPS.ErrorSuppression;
+using Quartz;
 
 namespace ECMPS.Checks.CheckEngine
 {
@@ -21,8 +22,17 @@ namespace ECMPS.Checks.CheckEngine
     /// <summary>
     /// The ECMPS Check Engine 
     /// </summary>
-    public class cCheckEngine
+    public class cCheckEngine : IJob
     {
+
+
+
+        public void Execute(IJobExecutionContext context)
+        {
+
+            Console.WriteLine("hey");
+        }
+
 
         #region Public Constructors
 
@@ -66,7 +76,7 @@ namespace ECMPS.Checks.CheckEngine
         /// <summary>
         /// Instantiates a cCheckEngine object primarily for unit testing purposes.
         /// </summary>
-        protected cCheckEngine()
+        public cCheckEngine()
         {
         }
 
@@ -1592,6 +1602,13 @@ namespace ECMPS.Checks.CheckEngine
         public string FormatError(Exception ex)
         {
             return string.Format("Failed executing method '{0}'.\n{1}\n{2}", ex.TargetSite.Name, ex.Message, ex.StackTrace);
+        }
+
+        Task IJob.Execute(IJobExecutionContext context)
+
+        {
+            Console.WriteLine("hey");
+            throw new NotImplementedException();
         }
 
         #endregion

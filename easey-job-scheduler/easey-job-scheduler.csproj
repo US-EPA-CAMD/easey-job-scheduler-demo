@@ -14,4 +14,7 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.2" />
     <PackageReference Include="SilkierQuartz" Version="*" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CheckEngine\CheckEngine.csproj" />
+  </ItemGroup>
 </Project>

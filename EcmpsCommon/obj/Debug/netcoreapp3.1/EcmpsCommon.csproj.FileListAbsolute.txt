@@ -1,0 +1,9 @@
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\bin\netcoreapp3.1\EcmpsCommon.deps.json
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\bin\netcoreapp3.1\EcmpsCommon.dll
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\bin\netcoreapp3.1\EcmpsCommon.pdb
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\EcmpsCommon\obj\Debug\netcoreapp3.1\EcmpsCommon.csprojAssemblyReference.cache
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\EcmpsCommon\obj\Debug\netcoreapp3.1\EcmpsCommon.AssemblyInfoInputs.cache
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\EcmpsCommon\obj\Debug\netcoreapp3.1\EcmpsCommon.AssemblyInfo.cs
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\EcmpsCommon\obj\Debug\netcoreapp3.1\EcmpsCommon.csproj.CoreCompileInputs.cache
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\EcmpsCommon\obj\Debug\netcoreapp3.1\EcmpsCommon.dll
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\EcmpsCommon\obj\Debug\netcoreapp3.1\EcmpsCommon.pdb

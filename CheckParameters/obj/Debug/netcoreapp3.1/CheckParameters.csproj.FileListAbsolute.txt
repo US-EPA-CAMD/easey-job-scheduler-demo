@@ -1,0 +1,11 @@
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\bin\netcoreapp3.1\CheckParameters.deps.json
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\bin\netcoreapp3.1\CheckParameters.dll
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\bin\netcoreapp3.1\CheckParameters.pdb
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\bin\netcoreapp3.1\CheckParameters.xml
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\CheckParameters\obj\Debug\netcoreapp3.1\CheckParameters.csprojAssemblyReference.cache
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\CheckParameters\obj\Debug\netcoreapp3.1\CheckParameters.AssemblyInfoInputs.cache
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\CheckParameters\obj\Debug\netcoreapp3.1\CheckParameters.AssemblyInfo.cs
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\CheckParameters\obj\Debug\netcoreapp3.1\CheckParameters.csproj.CoreCompileInputs.cache
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\CheckParameters\obj\Debug\netcoreapp3.1\CheckParameters.csproj.CopyComplete
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\CheckParameters\obj\Debug\netcoreapp3.1\CheckParameters.dll
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\CheckParameters\obj\Debug\netcoreapp3.1\CheckParameters.pdb

@@ -51,6 +51,12 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "dependencies": {
+            "Quartz": {
+              "target": "Package",
+              "version": "[3.3.2, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

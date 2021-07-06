@@ -1,0 +1,4 @@
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\UnitTest\obj\Debug\netcoreapp3.1\UnitTest.csprojAssemblyReference.cache
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\UnitTest\obj\Debug\netcoreapp3.1\UnitTest.AssemblyInfoInputs.cache
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\UnitTest\obj\Debug\netcoreapp3.1\UnitTest.AssemblyInfo.cs
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\UnitTest\obj\Debug\netcoreapp3.1\UnitTest.csproj.CoreCompileInputs.cache

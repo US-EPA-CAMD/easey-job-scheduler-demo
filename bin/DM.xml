@@ -1,0 +1,2457 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DM</name>
+    </assembly>
+    <members>
+        <member name="T:ECMPS.DM.cUpdateEmissions">
+            <summary>
+            Used to update DataMart (AMPD) Emissions for an Emission Report
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.cUpdateEmissions.#ctor(ECMPS.DM.Definitions.dUpdateInit,ECMPS.DM.Definitions.dUpdateSuccess,ECMPS.DM.Definitions.dUpdateFailure,ECMPS.DM.Definitions.dGetFactorFormulaeArray,ECMPS.DM.Definitions.dLogError,System.String)">
+            <summary>
+            Creates a cUpdateEmissions object.
+            </summary>
+            <param name="updateInit">The delegate initialize processing.</param>
+            <param name="updateSuccess">The delegate used to update after successful apportionment.</param>
+            <param name="updateFailure">The delegate used to update after apportionment failure.</param>
+            <param name="getFactorFormulaeArray"></param>
+            <param name="logError">The delegate called to log errors.</param>
+            <param name="userId">The user id to use in updated rows.</param>
+        </member>
+        <member name="P:ECMPS.DM.cUpdateEmissions.MonPlanId">
+            <summary>
+            The MON_PLAN_ID of the emissions report being processed
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.cUpdateEmissions.RptPeriodId">
+            <summary>
+            The RPT_PERIOD_ID of the emissions report being processed
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.cUpdateEmissions.ProcessEmissionReport(System.String,System.Int32)">
+            <summary>
+            Performs the actions needed to create the DataMart (AMPD) Emissions data.
+            </summary>
+            <param name="monPlanId">The monitor plan id of the emissions report.</param>
+            <param name="rptPeriodId">The report period id of the emissions report.</param>
+        </member>
+        <member name="M:ECMPS.DM.cUpdateEmissions.GetFactorFormulae(System.String,System.Int32,ECMPS.DM.Utilities.cUnitInfo[],ECMPS.DM.Utilities.cLocationInfo[],ECMPS.DM.Miscellaneous.cFactorFormulae[]@)">
+            <summary>
+            
+            </summary>
+            <param name="monPlanId"></param>
+            <param name="rptPeriodId"></param>
+            <param name="unitInfo"></param>
+            <param name="locationInfo"></param>
+            <param name="factorFormulaeArray"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ECMPS.DM.Definitions.dApportion">
+            <summary>
+            Delegate used for methods that apportion hours.
+            </summary>
+            <param name="date">The date of the hour to apportion.</param>
+            <param name="hour">The hour to apportion.</param>
+            <returns>Returns false if the apportionment did not complete,
+                     but true otherwise even if apportionment errors occurred.</returns>
+        </member>
+        <member name="T:ECMPS.DM.Definitions.dGetFactorFormulaeArray">
+            <summary>
+            Loads the Monitor Data Mart Emissions tables, and returns the data needed to
+            load the Unit Hour table.
+            </summary>
+            <param name="monPlanId">MON_PLAN_ID of the emission report.</param>
+            <param name="rptPeriodId">RPT_PERIOD_ID of the emission report.</param>
+            <param name="unitInfo"></param>
+            <param name="locationInfo"></param>
+            <param name="factorFormulaeArray"></param>
+            <param name="errorMessage">The error message if an error occurs.</param>
+            <returns>True if the SP executed without error.</returns>
+        </member>
+        <member name="T:ECMPS.DM.Definitions.dLogError">
+            <summary>
+            Delegate used for methods that log errors.
+            </summary>
+            <param name="message">The error message to log.</param>
+            <param name="detail">Additional detail about the error.</param>
+            <param name="opDate">The op date of the data that caused the error.</param>
+            <param name="opHour">The op hour of the data that caused the error.</param>
+            <param name="locationKey">The location key of the data that caused the error.</param>
+            <param name="erroredMethod">The method that caused the error.</param>
+            <returns>Returns false if the error was not logged.</returns>
+        </member>
+        <member name="T:ECMPS.DM.Definitions.dUpdateFailure">
+            <summary>
+            Delegate for the method called to update the check log, set apportionment type, and set emissions created to 'N'.
+            </summary>
+            <param name="dmEmissionsId">The DM_EMISSIONS_ID of the update.</param>
+            <param name="apportionmentType">The apportionment type of the update.</param>
+        </member>
+        <member name="T:ECMPS.DM.Definitions.dUpdateInit">
+            <summary>
+            Delegate for the method called to initialize the DM Update process.
+            </summary>
+            <param name="monPlanId">The monitor plan of the emissions report to update.</param>
+            <param name="rptPeriodId">The reporting period of the emissions report to update.</param>
+            <param name="userId">The user name to use for any created rows.</param>
+            <param name="dmEmissionsId">The DM_EMISSIONS_ID to store in created rows.</param>
+            <param name="dataSource">The Data Source to store in created rows.</param>
+            <param name="isMatsEmissionReport">Indicates whether the emission report is a MATS report.</param>
+            <param name="locationTable">Table of location information for the monitor plan.</param>
+            <param name="rptPeriodInfoTable">Table with a row containing reporting period information.</param>
+            <param name="locationTypeCountTable">Table with a row containing counts of the location types.</param>
+            <param name="locationLinkSpanCountTable">Table with a row containing counts of location links that span the reporting period.</param>
+            <param name="locationLinkActiveTable">Table with a row containing counts of location links active during the reporting period.</param>
+            <param name="specialMethodTable">Table with a row containg information about special methods.</param>
+            <param name="monitorHourTable">The monitor hour information for the emission report.</param>
+            <param name="errorMessage">The error message returned if the init failed.</param>
+            <returns>False if the init failed.</returns>
+        </member>
+        <member name="T:ECMPS.DM.Definitions.dUpdateSuccess">
+            <summary>
+            Delegate for the method called to update the apportionment type, unit hour data 
+            and check log.
+            </summary>
+            <param name="dmEmissionsId">The DM_EMISSIONS_ID of the update.</param>
+            <param name="apportionmentType">The apportionment type of the update.</param>
+            <param name="isMatsEmissionReport">Indicates whether the emission report is a MATS report.</param>
+            <param name="unitKeyArray">The UNIT_ID update array.</param>
+            <param name="dmEmissionsIdArray">The DM_EMISSIONS_ID update array.</param>
+            <param name="opDateArray">The op date update array.</param>
+            <param name="opHourArray">The op hour update array.</param>
+            <param name="opTimeArray">The op time update array.</param>
+            <param name="gLoadArray">The g-load update array.</param>
+            <param name="mLoadArray">The MATS load update array.</param>
+            <param name="sLoadArray">The s-load update array.</param>
+            <param name="tLoadArray">The t-load update array.</param>
+            <param name="hitArray">The HIT update array.</param>
+            <param name="hitMeasureArray">The HIT hour measure update array.</param>
+            <param name="so2mArray">The SO2M update array.</param>
+            <param name="so2mMeasureArray">The SO2M hour measure update array.</param>
+            <param name="so2rArray">The SO2R update array.</param>
+            <param name="so2rMeasureArray">The SO2R hour measure update array.</param>
+            <param name="co2mArray">The CO2M update array.</param>
+            <param name="co2mMeasureArray">The CO2M hour measure update array.</param>
+            <param name="co2rArray">The CO2R update array.</param>
+            <param name="co2rMeasureArray">The CO2R hour measure update array.</param>
+            <param name="noxmArray">The NOXM update array.</param>
+            <param name="noxmMeasureArray">The NOXM hour measure update array.</param>
+            <param name="noxrArray">The NOXR update array.</param>
+            <param name="noxrMeasureArray">The NOXR hour measure update array.</param>
+            <param name="hgRateEoArray">The Hg Rate Electrical Output update array.</param>
+            <param name="hgRateHiArray">The Hg Rate Heat Input update array.</param>
+            <param name="hgMassArray">The Hg Mass update array.</param>
+            <param name="hgMeasureArray">The Hg hour measure update array.</param>
+            <param name="hclRateEoArray">The HCl Rate Electrical Output update array.</param>
+            <param name="hclRateHiArray">The HCl Rate Heat Input update array.</param>
+            <param name="hclMassArray">The HCl Mass update array.</param>
+            <param name="hclMeasureArray">The HCl hour measure update array.</param>
+            <param name="hfRateEoArray">The HF Rate Electrical Output update array.</param>
+            <param name="hfRateHiArray">The HF Rate Heat Input update array.</param>
+            <param name="hfMassArray">The HF Mass update array.</param>
+            <param name="hfMeasureArray">The HF hour measure update array.</param>
+            <param name="monPlanIdArray">The MON_PLAN_ID update array.</param>
+            <param name="rptPeriodIdArray">The RPT_PERIOD_ID update array.</param>
+            <param name="opYearArray">The op year update array.</param>
+            <param name="dataSourceArray">The data source update array.</param>
+            <param name="userIdArray">The user id update array.</param>
+        </member>
+        <member name="T:ECMPS.DM.Definitions.eApportionmentType">
+            <summary>
+            Apportionment Type Enumeration
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Definitions.eApportionmentType.CommonPipe">
+            <summary>
+            One or more common pipes with more than one unit 
+            and each pipe attached to each unit.
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Definitions.eApportionmentType.CommonPipeLtff">
+            <summary>
+            One or more common pipes with LTFF methods attached to more than one unit.
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Definitions.eApportionmentType.CommonStack">
+            <summary>
+            One or more common stacks with more than one unit 
+            and each stack attached to each unit.
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Definitions.eApportionmentType.CommonStackAndPipe">
+            <summary>
+            One or more common stacks and one or more common pipes with more than one unit 
+            and each stack and each pipe attached to each unit.
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Definitions.eApportionmentType.MultipleStack">
+            <summary>
+            More than one multiple stack attached to a single unit.
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Definitions.eApportionmentType.Unit">
+            <summary>
+            Unit level.
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Definitions.eApportionmentType.Changed">
+            <summary>
+            Configuration changed during reporting period.
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Definitions.eApportionmentType.Complex">
+            <summary>
+            Apportionment must be handled by an apportionment spec
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Definitions.eApportionmentType.MultiplePipe">
+            <summary>
+            More than one multiple pipe attached to a single unit. (obsolete)
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Definitions.eApportionmentType.MultiplePipeInvolved">
+            <summary>
+            Multiple pipe in configuration but not a multiple pipe configuration (obsolete)
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Definitions.eApportionmentType.Error">
+            <summary>
+            Error processing configuration
+            </summary>
+        </member>
+        <member name="T:ECMPS.DM.Definitions.eComplexParameter">
+            <summary>
+            Complex Apportionment Parameters
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Definitions.eComplexParameter.So2m">
+            <summary>
+            SO2 Mass
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Definitions.eComplexParameter.Co2m">
+            <summary>
+            CO2 Mass
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Definitions.eComplexParameter.Noxm">
+            <summary>
+            NOx Mass
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Definitions.eComplexParameter.Hgm">
+            <summary>
+            Hg Mass
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Definitions.eComplexParameter.Hclm">
+            <summary>
+            HCl Mass
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Definitions.eComplexParameter.Hfm">
+            <summary>
+            HF Mass
+            </summary>
+        </member>
+        <member name="T:ECMPS.DM.HourlyEmissions.cHourlyApportionedData">
+            <summary>
+            The base class of the classes used to apportion data.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.#ctor(ECMPS.DM.HourlyEmissions.cHourlyRawData)">
+            <summary>
+            Creates and instance of the Hourly Apportioned Data class.
+            </summary>
+            <param name="hourlyRawData">The raw data on which the apportionment will occur.</param>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.ApportionmentType">
+            <summary>
+            The apportionment type of the class.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.GetApportionedData(ECMPS.DM.Definitions.eApportionmentType,ECMPS.DM.HourlyEmissions.cHourlyRawData,ECMPS.DM.Miscellaneous.cFactorFormulae[],ECMPS.DM.HourlyEmissions.cHourlyApportionedData@)">
+            <summary>
+            Returns an apportionment class corresponding to the indicated apportionment type.
+            </summary>
+            <param name="apportionmentType">The apportionment type of the apportionment class.</param>
+            <param name="hourlyRawData">The raw data to apportion.</param>
+            <param name="factorFormulaeArray"></param>
+            <param name="hourlyApportionedData">The resulting apportionment class.</param>
+            <returns>False if the apportionment type is not handled or an unhandled exception occurs.</returns>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.DataLength">
+            <summary>
+            The length of the arrays used to store the monitor hour data.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.HourlyRawData">
+            <summary>
+            The raw monitor data on which apportionment will occur.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.DateCount">
+            <summary>
+            The number of days in the emission report's quarter.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.HourCount">
+            <summary>
+            The number of hours in the emission report's quarter.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.LocationCount">
+            <summary>
+            The number of location in the emission report.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.LocationInfo">
+            <summary>
+            The location info for the emission report.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.Quarter">
+            <summary>
+            The quarter of the emissions report.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.QuarterBeganDate">
+            <summary>
+            The began date of the emissions report quarter.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.QuarterEndedDate">
+            <summary>
+            The ended date of the emissions report quarter.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.UnitCount">
+            <summary>
+            The number of units involved in the emissions report.
+            
+            Basically the number of items in LocationInfo.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.UnitInfo">
+            <summary>
+            Array of unit information objects.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.UserId">
+            <summary>
+            The user id to assign to the unit hour data.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.Year">
+            <summary>
+            The year of the emissions report.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.DataSourceArray">
+            <summary>
+            The array of Data Sources
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.DmEmissionsIdArray">
+            <summary>
+            The array of DM_EMISSIONS_ID
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.MonPlanIdArray">
+            <summary>
+            The array of Monitor Plan Ids.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.RptPeriodIdArray">
+            <summary>
+            The array of Report Period Ids.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.OpYearArray">
+            <summary>
+            The array of Years
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.UserIdArray">
+            <summary>
+            The array of User Ids.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.UnitKeyArray">
+            <summary>
+            The arrau of Unit Keys (UNIT_ID).
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.OpDateArray">
+            <summary>
+            The array of Op Dates.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.OpHourArray">
+            <summary>
+            The array of Op Hours.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.OpTimeArray">
+            <summary>
+            The array of Monitor Hour Op Time
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.GLoadArray">
+            <summary>
+            The array of Monitor Hour G-Load
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.MLoadArray">
+            <summary>
+            The array of Monitor Hour MATS Load
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.SLoadArray">
+            <summary>
+            The array of Monitor Hour S-Load
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.TLoadArray">
+            <summary>
+            The array of Monitor Hour T-Load
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.HitArray">
+            <summary>
+            The array of Monitor Hour HIT
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.HitMeasureArray">
+            <summary>
+            The array of Monitor Hour HIT Hour Measure Code
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.So2mArray">
+            <summary>
+            The array of Monitor Hour SO2M
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.So2mMeasureArray">
+            <summary>
+            The array of Monitor Hour SO2M Hour Measure Code
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.So2rArray">
+            <summary>
+            The array of Monitor Hour SO2R
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.So2rMeasureArray">
+            <summary>
+            The array of Monitor Hour SO2R Hour Measure Code
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.Co2mArray">
+            <summary>
+            The array of Monitor Hour CO2M
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.Co2mMeasureArray">
+            <summary>
+            The array of Monitor Hour CO2M Hour Measure Code
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.Co2rArray">
+            <summary>
+            The array of Monitor Hour CO2R
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.Co2rMeasureArray">
+            <summary>
+            The array of Monitor Hour CO2R Hour Measure Code
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.NoxmArray">
+            <summary>
+            The array of Monitor Hour NOXM
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.NoxmMeasureArray">
+            <summary>
+            The array of Monitor Hour NOXM Hour Measure Code
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.NoxrArray">
+            <summary>
+            The array of Monitor Hour NOXR
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.NoxrMeasureArray">
+            <summary>
+            The array of Monitor Hour NOXR Hour Measure Code
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.HgRateEoArray">
+            <summary>
+            Hg Electrical Output Based Rate array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.HgRateHiArray">
+            <summary>
+            Hg Heat Input Based Rate array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.HgMassArray">
+            <summary>
+            Hg Mass array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.HgMeasureArray">
+            <summary>
+            Hg Hour Measure Code array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.HclRateEoArray">
+            <summary>
+            HCl Electrical Output Based Rate array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.HclRateHiArray">
+            <summary>
+            HCl Heat Input Based Rate array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.HclMassArray">
+            <summary>
+            HCl Mass array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.HclMeasureArray">
+            <summary>
+            HCl Hour Measure Code array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.HfRateEoArray">
+            <summary>
+            HF Electrical Output Based Rate array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.HfRateHiArray">
+            <summary>
+            HF Heat Input Based Rate array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.HfMassArray">
+            <summary>
+            HF Mass array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.HfMeasureArray">
+            <summary>
+            HF Hour Measure Code array
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.Apportion">
+            <summary>
+            Performs apportionment for all hours
+            </summary>
+            <returns>False if an unhandled exception occurs.</returns>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.Apportion(System.DateTime,System.Int32)">
+            <summary>
+            The method that apportions an individual hour.
+            </summary>
+            <param name="date">The date of the hour to apportion.</param>
+            <param name="hour">The hour to apportion.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.ApportionRate(System.Nullable{System.Decimal}[],System.String[],System.Nullable{System.Decimal}[],System.Nullable{System.Decimal}[],System.Int32,System.Int32)">
+            <summary>
+            Calculates and sets the rate and rate measure values.
+            </summary>
+            <param name="apportionRateValueArray">The array of apportion rate values to set.</param>
+            <param name="apportionRateMeasureArray">The array of apportion rate measure flags to set.</param>
+            <param name="apportionMassValueArray">The array of apportion mass values used to calculate the rate.</param>
+            <param name="apportionHitValueArray">The array of apportion HIT values used to calculate the rate.</param>
+            <param name="decimalPlaces">The number of rounding decimal places for the result.</param>
+            <param name="apportionHourOffset">The hour offset into the apportion arrays.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.CombineMatsValue(System.Nullable{System.Decimal}@,ECMPS.DM.Utilities.cCombineMeasure@,System.Boolean@,System.Int32,System.Nullable{System.Decimal}[],System.String[])">
+            <summary>
+            Combines common values and their measure codes.
+            
+            If any combined value has a measure code of "Unavailable", the combined measure code is unavailable and the value is null.
+            </summary>
+            <param name="combinedValue">Value to combine.</param>
+            <param name="combinedMeasure">Measure code to combine.</param>
+            <param name="hasValues">Has value indicator initialized to null in caller and set to true if value exist at rawPos.</param>
+            <param name="rawPos">The position of the location/hour in the raw arrays.</param>
+            <param name="rawMassArray">The raw array of the mass value to combine.</param>
+            <param name="rawMeasureArray">The raw array of the measure value to combine.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.CopyHit(System.Int32,System.Int32)">
+            <summary>
+            Moves HIT data from the specified raw position to the specified apportion position.
+            </summary>
+            <param name="apportionHourOffset">Hour offset into the apportionment data arrays.</param>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.CopyHour(System.Int32,System.Int32)">
+            <summary>
+            Moves data from the specified raw position to the specified apportion position.
+            </summary>
+            <param name="apportionHourOffset">Hour offset into the apportionment data arrays.</param>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.CopyOpData(System.Int32,System.Int32)">
+            <summary>
+            Moves op time and load data from the specified raw position to the specified apportion position.
+            </summary>
+            <param name="apportionHourOffset">Hour offset into the apportionment data arrays.</param>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.CopyMats(System.Int32,System.Int32)">
+            <summary>
+            Moved MATS values from the specified raw position to the specified apportion position.
+            </summary>
+            <param name="apportionHourOffset">Hour offset into the apportionment data arrays.</param>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.CopyUnit(System.Int32,System.Int32)">
+            <summary>
+            Moves unit data from the specified raw position to the specified apportion position.
+            The move also calculates SO2R and CO2R data as well as null NOXM and NOXR data.
+            </summary>
+            <param name="apportionPos">The position of the unit in apportionment data.</param>
+            <param name="rawPos">The position of the unit in raw data.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.GetHourOffset(System.DateTime,System.Int32)">
+            <summary>
+            Gets the offset for the specified hour in apportionment data.
+            </summary>
+            <param name="date">The date of the hour of the offest.</param>
+            <param name="hour">The hour of the offest.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.GetHourOffset(System.DateTime,System.Int32,System.Nullable{System.Int32}@)">
+            <summary>
+            Gets the offset for the specified hour in apportionment data.
+            </summary>
+            <param name="date">The date of the hour of the offest.</param>
+            <param name="hour">The hour of the offest.</param>
+            <param name="hourOffset">The offset of the hour.</param>
+            <returns>True if the offset was successfully determined.</returns>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.RecheckNoxm(System.Int32)">
+            <summary>
+            Attempts to calculate null NOXM from HIT and NOXR.
+            </summary>
+            <param name="apportionHourOffset">Hour offset into the apportionment data arrays.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.FillMissingMatsRates(System.Int32)">
+            <summary>
+            Populates missing MATS rates when the mass and either MATS Load and Heat Input exists.
+            </summary>
+            <param name="apportionHourOffset">Hour offset into the apportionment data arrays.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedData.FillMissingMatsRates(System.Int32,System.Nullable{System.Decimal}[],System.Nullable{System.Decimal}[],System.Nullable{System.Decimal}[],System.Int32,System.Int32,System.Nullable{System.Decimal}[],System.Nullable{System.Decimal}[])">
+            <summary>
+            Calculates and fills the given electrical output or heat input based rates if they are missing and values exist to calculate them.
+            </summary>
+            <param name="apportionPos">The position of the apportionment data to calculated.</param>
+            <param name="massArray">The array of mass values to use in the calculation.</param>
+            <param name="matsLoadArray">The array of MATS loads to use in the electrical output based calculations.</param>
+            <param name="hitArray">The array of heat inputs to use in the heat input based calculations.</param>
+            <param name="eoBasedRateDecimalPlaces">The number of decimals for the electrical output based rate.</param>
+            <param name="hiBasedRateDecimalPlaces">The number of decimals for the heat input based rate.</param>
+            <param name="eoBasedRateArray">The array of electrical output based rates containing the value to calculate.</param>
+            <param name="hiBasedRateArray">The array of heat input based rates containing the value to calculate.</param>
+        </member>
+        <member name="T:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonPipe">
+            <summary>
+            Handles apportionment for common pipe and multiple common pipe emissions reports.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonPipe.#ctor(ECMPS.DM.HourlyEmissions.cHourlyRawData)">
+            <summary>
+            Creates an instance of the Unit Hourly Apportioned Data class.
+            </summary>
+            <param name="hourlyRawData">The raw data on which the apportionment will occur.</param>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonPipe.ApportionmentType">
+            <summary>
+            The apportionment type of the class.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonPipe.Apportion(System.DateTime,System.Int32)">
+            <summary>
+            The method that apportions an individual hour.
+            </summary>
+            <param name="date">The date of the hour to apportion.</param>
+            <param name="hour">The hour to apportion.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonPipe.ApportionMass(System.Nullable{System.Decimal}[],System.String[],System.Nullable{System.Decimal}[],System.String[],System.Nullable{System.Decimal},ECMPS.DM.Utilities.cCombineMeasure,System.Int32,System.Nullable{System.Decimal}[],System.Int32,System.Int32)">
+            <summary>
+            Apportions (combined) common pipe mass among the units.
+            </summary>
+            <param name="apportionValueArray">The array for the mass's apportioned values.</param>
+            <param name="apportionMeasureArray">The array for the mass's apporioned measure code.</param>
+            <param name="rawValueArray">The array for the mass's raw values.</param>
+            <param name="rawMeasureArray">The array for the mass's raw measure codes.</param>
+            <param name="combinedValue">The (combined) common stack mass value.</param>
+            <param name="combinedMeasure">The (combined) common stack mass measure code.</param>
+            <param name="decimalPlaces">The rounding decimal places for the mass.</param>
+            <param name="massFactors">An array of the unit factors to use in apportionment.</param>
+            <param name="apportionHourOffset">Hour offset into the apportionment data arrays.</param>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonPipe.ApportionNoxr(System.Int32,System.Int32)">
+            <summary>
+            Apportions (combined) common pipe NOXR among the units.
+            </summary>
+            <param name="apportionHourOffset">Hour offset into the apportionment data arrays.</param>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonPipe.GetApportionFactors(System.Int32,System.Nullable{System.Decimal}[]@)">
+            <summary>
+            Returns the apportionment factors, apportion indicators and subtractive values for an hour.
+            </summary>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+            <param name="massFactors">The apportionment factors for the hour.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonPipe.GetCombinedValues(System.Int32,System.Boolean@,System.Nullable{System.Decimal}@,ECMPS.DM.Utilities.cCombineMeasure@,System.Nullable{System.Decimal}@,ECMPS.DM.Utilities.cCombineMeasure@,System.Nullable{System.Decimal}@,ECMPS.DM.Utilities.cCombineMeasure@)">
+            <summary>
+            Gets the (combined) common stack values and measure flags.
+            </summary>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+            <param name="hasValues">Indicates that combined values exist.</param>
+            <param name="so2mCombinedValue">The (combined) common value.</param>
+            <param name="so2mCombinedMeasure">The (combined) common measure flag.</param>
+            <param name="co2mCombinedValue">The (combined) common value.</param>
+            <param name="co2mCombinedMeasure">The (combined) common measure flag.</param>
+            <param name="noxmCombinedValue">The (combined) common value.</param>
+            <param name="noxmCombinedMeasure">The (combined) common measure flag.</param>
+        </member>
+        <member name="T:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonStack">
+            <summary>
+            Handles apportionment for common stack and multiple common stack emissions reports.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonStack.#ctor(ECMPS.DM.HourlyEmissions.cHourlyRawData)">
+            <summary>
+            Creates an instance of the Unit Hourly Apportioned Data class.
+            </summary>
+            <param name="hourlyRawData">The raw data on which the apportionment will occur.</param>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonStack.ApportionmentType">
+            <summary>
+            The apportionment type of the class.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonStack.Apportion(System.DateTime,System.Int32)">
+            <summary>
+            The method that apportions an individual hour.
+            </summary>
+            <param name="date">The date of the hour to apportion.</param>
+            <param name="hour">The hour to apportion.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonStack.ApportionMass(System.Nullable{System.Decimal}[],System.String[],System.Nullable{System.Decimal}[],System.String[],System.Boolean[],System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.Int32,System.Nullable{System.Decimal}[],System.Int32,System.Int32)">
+            <summary>
+            Apportions (combined) common stack mass among the units.
+            </summary>
+            <param name="apportionValueArray">The array for the mass's apportioned values.</param>
+            <param name="apportionMeasureArray">The array for the mass's apporioned measure code.</param>
+            <param name="rawValueArray">The array for the mass's raw values.</param>
+            <param name="rawMeasureArray">The array for the mass's raw measure codes.</param>
+            <param name="apportionValue">A boolean array indicating whether a particular unit should receive apportioned values.</param>
+            <param name="subtractValue">The sum of the mass reported at units.</param>
+            <param name="combinedValue">The (combined) common stack mass value.</param>
+            <param name="combinedMeasure">The (combined) common stack mass measure code.</param>
+            <param name="decimalPlaces">The rounding decimal places for the mass.</param>
+            <param name="massFactors">An array of the unit factors to use in apportionment.</param>
+            <param name="apportionHourOffset">Hour offset into the apportionment data arrays.</param>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonStack.ApportionNoxr(System.Boolean[],System.Nullable{System.Decimal},System.String,System.Int32,System.Int32)">
+            <summary>
+            Apportions (combined) common stack NOXR among the units.
+            </summary>
+            <param name="calculateValue">A boolean array indicating whether a particular unit should receive calculated values.</param>
+            <param name="combinedValue">The (combined) common stack NOXR value.</param>
+            <param name="combinedMeasure">The (combined) common stack NOXR measure code.</param>
+            <param name="apportionHourOffset">Hour offset into the apportionment data arrays.</param>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonStack.GetApportionFactors(System.Int32,System.Nullable{System.Decimal}[]@,System.Boolean[]@,System.Nullable{System.Decimal}@,System.Boolean[]@,System.Nullable{System.Decimal}@,System.Boolean[]@,System.Nullable{System.Decimal}@,System.Boolean[]@,System.Boolean[]@,System.Nullable{System.Decimal}@,System.Boolean[]@,System.Nullable{System.Decimal}@,System.Boolean[]@,System.Nullable{System.Decimal}@)">
+            <summary>
+            Returns the apportionment factors, apportion indicators and subtractive values for an hour.
+            </summary>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+            <param name="massFactors">The apportionment factors for the hour.</param>
+            <param name="so2mApportionValue">A boolean array indicating whether a particular unit should receive apportioned values.</param>
+            <param name="so2mSubtract">The sum of the value reported at units.</param>
+            <param name="co2mApportionValue">A boolean array indicating whether a particular unit should receive apportioned values.</param>
+            <param name="co2mSubtract">The sum of the value reported at units.</param>
+            <param name="noxmApportionValue">A boolean array indicating whether a particular unit should receive apportioned values.</param>
+            <param name="noxmSubtract">The sum of the value reported at units.</param>
+            <param name="noxrCalculateValue">A boolean array indicating whether a particular unit should receive apportioned values.</param>
+            <param name="hgmApportionValue">A boolean array indicating whether a particular unit should receive apportioned values.</param>
+            <param name="hgmSubtract">The sum of the value reported at units.</param>
+            <param name="hclmApportionValue">A boolean array indicating whether a particular unit should receive apportioned values.</param>
+            <param name="hclmSubtract">The sum of the value reported at units.</param>
+            <param name="hfmApportionValue">A boolean array indicating whether a particular unit should receive apportioned values.</param>
+            <param name="hfmSubtract">The sum of the value reported at units.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonStack.GetCombinedValues(System.Int32,System.Boolean@,System.Nullable{System.Decimal}@,System.String@,System.Nullable{System.Decimal}@,System.String@,System.Nullable{System.Decimal}@,System.String@,System.Nullable{System.Decimal}@,System.String@,System.Nullable{System.Decimal}@,System.String@,System.Nullable{System.Decimal}@,System.String@,System.Nullable{System.Decimal}@,System.String@)">
+            <summary>
+            Gets the (combined) common stack values and measure flags.
+            </summary>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+            <param name="hasValues">Indicates that combined values exist.</param>
+            <param name="so2mCombinedValue">The (combined) common value.</param>
+            <param name="so2mCombinedMeasure">The (combined) common measure flag.</param>
+            <param name="co2mCombinedValue">The (combined) common value.</param>
+            <param name="co2mCombinedMeasure">The (combined) common measure flag.</param>
+            <param name="noxmCombinedValue">The (combined) common value.</param>
+            <param name="noxmCombinedMeasure">The (combined) common measure flag.</param>
+            <param name="noxrCombinedValue">The (combined) common value.</param>
+            <param name="noxrCombinedMeasure">The (combined) common measure flag.</param>
+            <param name="hgmCombinedValue">The (combined) common value.</param>
+            <param name="hgmCombinedMeasure">The (combined) common measure flag.</param>
+            <param name="hclmCombinedValue">The (combined) common value.</param>
+            <param name="hclmCombinedMeasure">The (combined) common measure flag.</param>
+            <param name="hfmCombinedValue">The (combined) common value.</param>
+            <param name="hfmCombinedMeasure">The (combined) common measure flag.</param>
+        </member>
+        <member name="T:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonStackAndPipe">
+            <summary>
+            Handles apportionment for common stack(s) and pipe(s) emissions reports.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonStackAndPipe.#ctor(ECMPS.DM.HourlyEmissions.cHourlyRawData)">
+            <summary>
+            Creates an instance of the Unit Hourly Apportioned Data class.
+            </summary>
+            <param name="hourlyRawData">The raw data on which the apportionment will occur.</param>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonStackAndPipe.ApportionmentType">
+            <summary>
+            The apportionment type of the class.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonStackAndPipe.Apportion(System.DateTime,System.Int32)">
+            <summary>
+            The method that apportions an individual hour.
+            </summary>
+            <param name="date">The date of the hour to apportion.</param>
+            <param name="hour">The hour to apportion.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonStackAndPipe.ApportionPipeMass(System.Nullable{System.Decimal}[],System.String[],System.Nullable{System.Decimal}[],System.String[],System.Nullable{System.Decimal},ECMPS.DM.Utilities.cCombineMeasure,System.Int32,System.Nullable{System.Decimal}[],System.Int32,System.Int32)">
+            <summary>
+            Apportions (combined) common pipe mass among the units.
+            </summary>
+            <param name="apportionValueArray">The array for the mass's apportioned values.</param>
+            <param name="apportionMeasureArray">The array for the mass's apporioned measure code.</param>
+            <param name="rawValueArray">The array for the mass's raw values.</param>
+            <param name="rawMeasureArray">The array for the mass's raw measure codes.</param>
+            <param name="combinedValue">The (combined) common stack mass value.</param>
+            <param name="combinedMeasure">The (combined) common stack mass measure code.</param>
+            <param name="decimalPlaces">The rounding decimal places for the mass.</param>
+            <param name="massFactors">An array of the unit factors to use in apportionment.</param>
+            <param name="apportionHourOffset">Hour offset into the apportionment data arrays.</param>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonStackAndPipe.ApportionStackMass(System.Nullable{System.Decimal}[],System.String[],System.Nullable{System.Decimal}[],System.String[],System.Boolean[],System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.Int32,System.Nullable{System.Decimal}[],System.Int32,System.Int32)">
+            <summary>
+            Apportions (combined) common stack mass among the units.
+            </summary>
+            <param name="apportionValueArray">The array for the mass's apportioned values.</param>
+            <param name="apportionMeasureArray">The array for the mass's apporioned measure code.</param>
+            <param name="rawValueArray">The array for the mass's raw values.</param>
+            <param name="rawMeasureArray">The array for the mass's raw measure codes.</param>
+            <param name="apportionValue">A boolean array indicating whether a particular unit should receive apportioned values.</param>
+            <param name="subtractValue">The sum of the mass reported at units.</param>
+            <param name="combinedValue">The (combined) common stack mass value.</param>
+            <param name="combinedMeasure">The (combined) common stack mass measure code.</param>
+            <param name="decimalPlaces">The rounding decimal places for the mass.</param>
+            <param name="massFactors">An array of the unit factors to use in apportionment.</param>
+            <param name="apportionHourOffset">Hour offset into the apportionment data arrays.</param>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonStackAndPipe.ApportionStackNoxr(System.Boolean[],System.Nullable{System.Decimal},System.String,System.Int32,System.Int32)">
+            <summary>
+            Apportions (combined) common stack NOXR among the units.
+            </summary>
+            <param name="calculateValue">A boolean array indicating whether a particular unit should receive calculated values.</param>
+            <param name="combinedValue">The (combined) common stack NOXR value.</param>
+            <param name="combinedMeasure">The (combined) common stack NOXR measure code.</param>
+            <param name="apportionHourOffset">Hour offset into the apportionment data arrays.</param>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonStackAndPipe.GetApportionPipeFactors(System.Int32,System.Nullable{System.Decimal}[]@)">
+            <summary>
+            Returns the pipe apportionment factors, apportion indicators and subtractive values for an hour.
+            </summary>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+            <param name="massFactors">The apportionment factors for the hour.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonStackAndPipe.GetApportionStackFactors(System.Int32,System.Nullable{System.Decimal}[]@,System.Boolean[]@,System.Nullable{System.Decimal}@,System.Boolean[]@,System.Boolean[]@,System.Nullable{System.Decimal}@,System.Boolean[]@,System.Nullable{System.Decimal}@,System.Boolean[]@,System.Nullable{System.Decimal}@)">
+            <summary>
+            Returns the stack apportionment factors, apportion indicators and subtractive values for an hour.
+            </summary>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+            <param name="massFactors">The apportionment factors for the hour.</param>
+            <param name="noxmApportionValue">A boolean array indicating whether a particular unit should receive apportioned values.</param>
+            <param name="noxmSubtract">The sum of the value reported at units.</param>
+            <param name="noxrCalculateValue">A boolean array indicating whether a particular unit should receive apportioned values.</param>
+            <param name="hgmApportionValue">A boolean array indicating whether a particular unit should receive apportioned values.</param>
+            <param name="hgmSubtract">The sum of the value reported at units.</param>
+            <param name="hclmApportionValue">A boolean array indicating whether a particular unit should receive apportioned values.</param>
+            <param name="hclmSubtract">The sum of the value reported at units.</param>
+            <param name="hfmApportionValue">A boolean array indicating whether a particular unit should receive apportioned values.</param>
+            <param name="hfmSubtract">The sum of the value reported at units.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonStackAndPipe.GetCombinedPipeValues(System.Int32,System.Boolean@,System.Nullable{System.Decimal}@,ECMPS.DM.Utilities.cCombineMeasure@,System.Nullable{System.Decimal}@,ECMPS.DM.Utilities.cCombineMeasure@)">
+            <summary>
+            Gets the (combined) common pipe values and measure flags.
+            </summary>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+            <param name="hasValues">Indicates that combined values exist.</param>
+            <param name="so2mCombinedValue">The (combined) common value.</param>
+            <param name="so2mCombinedMeasure">The (combined) common measure flag.</param>
+            <param name="co2mCombinedValue">The (combined) common value.</param>
+            <param name="co2mCombinedMeasure">The (combined) common measure flag.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataCommonStackAndPipe.GetCombinedStackValues(System.Int32,System.Boolean@,System.Nullable{System.Decimal}@,System.String@,System.Nullable{System.Decimal}@,System.String@,System.Nullable{System.Decimal}@,System.String@,System.Nullable{System.Decimal}@,System.String@,System.Nullable{System.Decimal}@,System.String@)">
+            <summary>
+            Gets the (combined) common stack values and measure flags.
+            </summary>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+            <param name="hasValues">Indicates that combined values exist.</param>
+            <param name="noxmCombinedValue">The (combined) common value.</param>
+            <param name="noxmCombinedMeasure">The (combined) common measure flag.</param>
+            <param name="noxrCombinedValue">The (combined) common value.</param>
+            <param name="noxrCombinedMeasure">The (combined) common measure flag.</param>
+            <param name="hgmCombinedValue">The (combined) common value.</param>
+            <param name="hgmCombinedMeasure">The (combined) common measure flag.</param>
+            <param name="hclmCombinedValue">The (combined) common value.</param>
+            <param name="hclmCombinedMeasure">The (combined) common measure flag.</param>
+            <param name="hfmCombinedValue">The (combined) common value.</param>
+            <param name="hfmCombinedMeasure">The (combined) common measure flag.</param>
+        </member>
+        <member name="T:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataComplex">
+            <summary>
+            Handles apportionment for Complex.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataComplex.#ctor(ECMPS.DM.HourlyEmissions.cHourlyRawData,ECMPS.DM.Miscellaneous.cFactorFormulae[])">
+            <summary>
+            Creates an instance of the Unit Hourly Apportioned Data class.
+            </summary>
+            <param name="hourlyRawData">The raw data on which the apportionment will occur.</param>
+            <param name="factorFormulae">The factor formula for the complex configuration.</param>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataComplex.ApportionmentType">
+            <summary>
+            The apportionment type of the class.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataComplex.FactorFormulaeList">
+            <summary>
+            The factor formulae list for the complex apportionment.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataComplex.Apportion(System.DateTime,System.Int32)">
+            <summary>
+            The method that apportions an individual hour.
+            </summary>
+            <param name="date">The date of the hour to apportion.</param>
+            <param name="hour">The hour to apportion.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataComplex.ApportionMass(System.Nullable{System.Decimal}[],System.String[],System.Nullable{System.Decimal}[],System.String[],System.Nullable{System.Decimal}[],ECMPS.DM.Definitions.eComplexParameter,System.Int32,System.Nullable{System.Decimal}[],System.Boolean,ECMPS.DM.Miscellaneous.cFactorFormulae,System.DateTime,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Apportions (combined) common stack mass among the units.
+            </summary>
+            <param name="apportionValueArray">The array for the mass's apportioned values.</param>
+            <param name="apportionMeasureArray">The array for the mass's apporioned measure code.</param>
+            <param name="rawValueArray">The array for the mass's raw values.</param>
+            <param name="rawMeasureArray">The array for the mass's raw measure codes.</param>
+            <param name="rawOpTimeArray">The array for the raw op time values.</param>
+            <param name="complexParameter">Complex parameter type.</param>
+            <param name="decimalPlaces">The rounding decimal places for the mass.</param>
+            <param name="massFactors">An array of the unit factors to use in apportionment.</param>
+            <param name="useHiLoadFormulae">If true use Hi/Load formulas over Op Time formulas.</param>
+            <param name="factorFormulae">The factor formulae to apply.</param>
+            <param name="date">The date of the hour to apportion.</param>
+            <param name="hour">The hour to apportion.</param>
+            <param name="apportionHourOffset">Hour offset into the apportionment data arrays.</param>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataComplex.GetApportionFactors_CheckHiLoadFormulae(System.Nullable{System.Decimal}[],System.Nullable{System.Decimal}[],System.String,System.DateTime,System.Int32,ECMPS.DM.Miscellaneous.cFactorFormulae)">
+            <summary>
+            Check all the HI/Load formulas against the passed factors to determine whether any error occurs.
+            </summary>
+            <param name="factors">The factors to test.</param>
+            <param name="opTimes">The op times for the locations.</param>
+            <param name="factorType">The name of the factor being tested.</param>
+            <param name="date">The name of the factor being tested.</param>
+            <param name="hour">The name of the factor being tested.</param>
+            <param name="factorFormulae">The name of the factor formulae being tested.</param>
+            <returns>True if no formulas failed.</returns>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataComplex.GetFactorFormulae(System.DateTime,System.Int32,System.Int32,ECMPS.DM.Miscellaneous.cFactorFormulae@)">
+            <summary>
+            Returns the Factor Formulae to use with the current date and hour
+            </summary>
+            <param name="date">The date of the hour to apportion.</param>
+            <param name="hour">The hour to apportion.</param>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+            <param name="factorFormulae">The factor formula for the hour.</param>
+            <returns>True if factor formulae were found.</returns>
+        </member>
+        <member name="T:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataMultipleStack">
+            <summary>
+            Handles apportionment for multiple stack emissions reports.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataMultipleStack.#ctor(ECMPS.DM.HourlyEmissions.cHourlyRawData)">
+            <summary>
+            Creates an instance of the Unit Hourly Apportioned Data class.
+            </summary>
+            <param name="hourlyRawData">The raw data on which the apportionment will occur.</param>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataMultipleStack.ApportionmentType">
+            <summary>
+            The apportionment type of the class.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataMultipleStack.Apportion(System.DateTime,System.Int32)">
+            <summary>
+            The method that apportions an individual hour.
+            </summary>
+            <param name="date">The date of the hour to apportion.</param>
+            <param name="hour">The hour to apportion.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataMultipleStack.ApportionMass(System.Nullable{System.Decimal}[],System.String[],System.Nullable{System.Decimal}[],System.String[],System.Boolean,System.Nullable{System.Decimal},System.String,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Assigns mass value to the unit.
+            </summary>
+            <param name="apportionValueArray">The array for the mass's apportioned values.</param>
+            <param name="apportionMeasureArray">The array for the mass's apporioned measure code.</param>
+            <param name="rawValueArray">The array for the mass's raw values.</param>
+            <param name="rawMeasureArray">The array for the mass's raw measure codes.</param>
+            <param name="apportionValue">A boolean array indicating whether a particular unit should receive apportioned values.</param>
+            <param name="combinedValue">The combined multiple stack mass value.</param>
+            <param name="combinedMeasure">The combined multiple stack mass measure code.</param>
+            <param name="decimalPlaces">The rounding decimal places for the mass.</param>
+            <param name="apportionHourOffset">Hour offset into the apportionment data arrays.</param>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataMultipleStack.ApportionNoxr(System.Boolean,System.Nullable{System.Decimal},System.String,System.Int32,System.Int32)">
+            <summary>
+            Assigns NOXR value to the unit.
+            </summary>
+            <param name="calculateValue">Indicates whether the NOXR is calculated from the MS.</param>
+            <param name="combinedValue">The combined multiple stack mass value.</param>
+            <param name="combinedMeasure">The combined multiple stack mass measure code.</param>
+            <param name="apportionHourOffset">Hour offset into the apportionment data arrays.</param>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataMultipleStack.GetApportionFactors(System.Int32,System.Boolean@,System.Boolean@,System.Boolean@,System.Boolean@,System.Boolean@,System.Boolean@,System.Boolean@)">
+            <summary>
+            Returns value indicates whether to apportion values from MS.
+            </summary>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+            <param name="so2mApportionValue">Indicates whether to apportione the value.</param>
+            <param name="co2mApportionValue">Indicates whether to apportione the value.</param>
+            <param name="noxmApportionValue">Indicates whether to apportione the value.</param>
+            <param name="noxrCalculateValue">Indicates whether to apportione the value.</param>
+            <param name="hgmApportionValue">A boolean array indicating whether a particular unit should receive apportioned values.</param>
+            <param name="hclmApportionValue">A boolean array indicating whether a particular unit should receive apportioned values.</param>
+            <param name="hfmApportionValue">A boolean array indicating whether a particular unit should receive apportioned values.</param>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataMultipleStack.GetCombinedValues(System.Int32,System.Boolean@,System.Nullable{System.Decimal}@,System.String@,System.Nullable{System.Decimal}@,System.String@,System.Nullable{System.Decimal}@,System.String@,System.Nullable{System.Decimal}@,System.String@,System.Nullable{System.Decimal}@,System.String@,System.Nullable{System.Decimal}@,System.String@,System.Nullable{System.Decimal}@,System.String@)">
+            <summary>
+            Gets the multiple stack values and measure flags.
+            </summary>
+            <param name="rawHourOffset">Hour offset into the raw daa arrays.</param>
+            <param name="hasValues">Indicates that combined values exist.</param>
+            <param name="so2mCombinedValue">The (combined) common value.</param>
+            <param name="so2mCombinedMeasure">The (combined) common measure flag.</param>
+            <param name="co2mCombinedValue">The (combined) common value.</param>
+            <param name="co2mCombinedMeasure">The (combined) common measure flag.</param>
+            <param name="noxmCombinedValue">The (combined) common value.</param>
+            <param name="noxmCombinedMeasure">The (combined) common measure flag.</param>
+            <param name="noxrCombinedValue">The (combined) common value.</param>
+            <param name="noxrCombinedMeasure">The (combined) common measure flag.</param>
+            <param name="hgmCombinedValue">The (combined) common value.</param>
+            <param name="hgmCombinedMeasure">The (combined) common measure flag.</param>
+            <param name="hclmCombinedValue">The (combined) common value.</param>
+            <param name="hclmCombinedMeasure">The (combined) common measure flag.</param>
+            <param name="hfmCombinedValue">The (combined) common value.</param>
+            <param name="hfmCombinedMeasure">The (combined) common measure flag.</param>
+        </member>
+        <member name="T:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataUnit">
+            <summary>
+            Handles apportionment for emissions reports that only contain actual emissions data for units.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataUnit.#ctor(ECMPS.DM.HourlyEmissions.cHourlyRawData)">
+            <summary>
+            Creates an instance of the  Unit Hourly Apportioned Data class.
+            </summary>
+            <param name="hourlyRawData">The raw data on which the apportionment will occur.</param>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataUnit.ApportionmentType">
+            <summary>
+            The apportionment type of the class.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyApportionedDataUnit.Apportion(System.DateTime,System.Int32)">
+            <summary>
+            The method that apportions an individual hour.
+            </summary>
+            <param name="date">The date of the hour to apportion.</param>
+            <param name="hour">The hour to apportion.</param>
+            <returns></returns>
+        </member>
+        <member name="T:ECMPS.DM.HourlyEmissions.cHourlyRawData">
+            <summary>
+            Class used to contain monitor hour data needed
+            to create unit hour data.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyRawData.#ctor(System.String,System.String,System.Int32,ECMPS.DM.Utilities.cLocationInfo[],System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Creates an object to hold the monitor hour data needed
+            to create unit hour data.
+            </summary>
+            <param name="dmEmissionsId">The DM_EMISSIONS_ID for the emission report.</param>
+            <param name="monPlanId">The montior plan id of the emission report.</param>
+            <param name="rptPeriodId">The reporting period of the emission report.</param>
+            <param name="locationInfo">Array of location information objects.</param>
+            <param name="year">The year of the reporting period.</param>
+            <param name="quarter">The quarter of the reporting period.</param>
+            <param name="dataSource">The data source to assign to the unit hour data.</param>
+            <param name="userId">The user id to assign to the unit hour data.</param>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.DataLength">
+            <summary>
+            The length of the arrays used to store the monitor hour data.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.DataSource">
+            <summary>
+            The data source to assign to the unit hour data.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.DateCount">
+            <summary>
+            The number of days in the emission report's quarter.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.DmEmissionsId">
+            <summary>
+            The DM_EMISSIONS_ID to assign to new rows.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.HourCount">
+            <summary>
+            The number of hours in the emission report's quarter.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.LocationCount">
+            <summary>
+            The number of locations involved in the emissions report.
+            
+            Basically the number of items in LocationInfo.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.LocationInfo">
+            <summary>
+            Array of location information objects.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.MonPlanId">
+            <summary>
+            The Monitor Plan Id of the emissions report.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.Quarter">
+            <summary>
+            The quarter of the emissions report.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.QuarterBeganDate">
+            <summary>
+            The began date of the emissions report quarter.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.QuarterEndedDate">
+            <summary>
+            The ended date of the emissions report quarter.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.RptPeriodId">
+            <summary>
+            The reporting period id of the emissions report.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.UnitCount">
+            <summary>
+            The number of units involved in the emissions report.
+            
+            Basically the number of items in LocationInfo.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.UnitInfo">
+            <summary>
+            Array of unit information objects.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.UserId">
+            <summary>
+            The user id to assign to the unit hour data.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.Year">
+            <summary>
+            The year of the emissions report.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.OpTimeArray">
+            <summary>
+            The array of Monitor Hour Op Time
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.GLoadArray">
+            <summary>
+            The array of Monitor Hour G-Load
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.MLoadArray">
+            <summary>
+            The array of Monitor Hour MATS Load
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.SLoadArray">
+            <summary>
+            The array of Monitor Hour S-Load
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.TLoadArray">
+            <summary>
+            The array of Monitor Hour T-Load
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.HitArray">
+            <summary>
+            The array of Monitor Hour HIT
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.HitMeasureArray">
+            <summary>
+            The array of Monitor Hour HIT Hour Measure Code
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.HitffArray">
+            <summary>
+            The array of Monitor Hour HIT From Fuel Flow
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.So2mArray">
+            <summary>
+            The array of Monitor Hour SO2M
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.So2mMeasureArray">
+            <summary>
+            The array of Monitor Hour SO2M Hour Measure Code
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.Co2mArray">
+            <summary>
+            The array of Monitor Hour CO2M
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.Co2mMeasureArray">
+            <summary>
+            The array of Monitor Hour CO2M Hour Measure Code
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.NoxmArray">
+            <summary>
+            The array of Monitor Hour NOXM
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.NoxmMeasureArray">
+            <summary>
+            The array of Monitor Hour NOXM Hour Measure Code
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.NoxrArray">
+            <summary>
+            The array of Monitor Hour NOXR
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.NoxrMeasureArray">
+            <summary>
+            The array of Monitor Hour NOXR Hour Measure Code
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.HgRateEoArray">
+            <summary>
+            Hg Electrical Output Based Rate array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.HgRateHiArray">
+            <summary>
+            Hg Heat Input Based Rate array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.HgMassArray">
+            <summary>
+            Hg Mass array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.HgMeasureArray">
+            <summary>
+            Hg Hour Measure Code array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.HclRateEoArray">
+            <summary>
+            HCl Electrical Output Based Rate array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.HclRateHiArray">
+            <summary>
+            HCl Heat Input Based Rate array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.HclMassArray">
+            <summary>
+            HCl Mass array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.HclMeasureArray">
+            <summary>
+            HCl Hour Measure Code array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.HfRateEoArray">
+            <summary>
+            HF Electrical Output Based Rate array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.HfRateHiArray">
+            <summary>
+            HF Heat Input Based Rate array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.HfMassArray">
+            <summary>
+            HF Mass array
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.HourlyEmissions.cHourlyRawData.HfMeasureArray">
+            <summary>
+            HF Hour Measure Code array
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyRawData.GetHourOffset(System.DateTime,System.Int32)">
+            <summary>
+            Returns the offset into the data arrays for a particular date and hour.
+            </summary>
+            <param name="date">The date of the offest.</param>
+            <param name="hour">The hour of the offest.</param>
+            <returns>The offset if the date is in the quarter 
+            and the hour is between 0 and 23 inclusive.</returns>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyRawData.GetHourOffset(System.DateTime,System.Int32,System.Nullable{System.Int32}@)">
+            <summary>
+            Gets the offset into the data arrays for a particular date and hour.
+            </summary>
+            <param name="date">The date of the offest.</param>
+            <param name="hour">The hour of the offest.</param>
+            <param name="hourOffset">The offset if the date is in the quarter 
+                                     and the hour is between 0 and 23 inclusive.</param>
+            <returns>True if an offset was returned.</returns>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyRawData.GetLocationPosition(System.DateTime,System.Int32,System.String)">
+            <summary>
+            Returns the postion for a date, hour and location in the data arrays.
+            </summary>
+            <param name="date">The date of the offest.</param>
+            <param name="hour">The hour of the offest.</param>
+            <param name="locationKey">The MON_LOC_ID of the location.</param>
+            <returns>The position of the hour and location in the data arrays.</returns>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyRawData.GetLocationPosition(System.DateTime,System.Int32,System.String,System.Nullable{System.Int32}@)">
+            <summary>
+            Gets the postion for a date, hour and location in the data arrays.
+            </summary>
+            <param name="date">The date of the offest.</param>
+            <param name="hour">The hour of the offest.</param>
+            <param name="locationKey">The MON_LOC_ID of the location.</param>
+            <param name="locationPosition">The position of the hour and location in the data arrays.</param>
+            <returns>True if a position was determined.</returns>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyRawData.Update(System.String,System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.Nullable{System.Decimal},System.String,System.Nullable{System.Decimal},System.String,System.Nullable{System.Decimal},System.String,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String)">
+            <summary>
+            Loads a monitor hour row into the data arrays.
+            </summary>
+            <param name="locationKey">The MON_LOC_ID value.</param>
+            <param name="opDate">The OP_DATE value.</param>
+            <param name="opHour">The OP_HOUR value.</param>
+            <param name="opTime">The OP_TIME value.</param>
+            <param name="gLoad">The GLOAD value.</param>
+            <param name="mLoad">The MATS LOAD value.</param>
+            <param name="sLoad">The SLOAD value.</param>
+            <param name="tLoad">The TLOAD value.</param>
+            <param name="hit">The HIT value.</param>
+            <param name="hitMeasure">The HIT_HOUR_MEASURE_CD value.</param>
+            <param name="hitFF">The HIT_FROM_FUEL_FLOW value.</param>
+            <param name="so2m">The SO2M value.</param>
+            <param name="so2mMeasure">The SO2M_HOUR_MEASURE_CD value.</param>
+            <param name="co2m">The CO2M value.</param>
+            <param name="co2mMeasure">The CO2M_HOUR_MEASURE_CD value.</param>
+            <param name="noxm">The NOXM value.</param>
+            <param name="noxmMeasure">The NOXM_HOUR_MEASURE_CD value.</param>
+            <param name="noxr">The NOXR value.</param>
+            <param name="noxrMeasure">The NOXR_HOUR_MEASURE_CD value.</param>
+            <param name="hgRateEo">Hg Rate Electrical Output value.</param>
+            <param name="hgRateHi">Hg Rate Heat Input value.</param>
+            <param name="hgMass">Hg Mass value.</param>
+            <param name="hgMeasure">Hg Measure Code value.</param>
+            <param name="hclRateEo">HCl Rate Electrical Output value.</param>
+            <param name="hclRateHi">HCl Rate Heat Input value.</param>
+            <param name="hclMass">HCl Mass value.</param>
+            <param name="hclMeasure">HCl Measure Code value.</param>
+            <param name="hfRateEo">HF Rate Electrical Output value.</param>
+            <param name="hfRateHi">HF Rate Heat Input value.</param>
+            <param name="hfMass">HF Mass value.</param>
+            <param name="hfMeasure">HF Measure Code value.</param>
+            <returns>False if the row was not loaded.</returns>
+        </member>
+        <member name="M:ECMPS.DM.HourlyEmissions.cHourlyRawData.Update(System.Data.DataTable)">
+            <summary>
+            Loads a monitor hour table into the data arrays.
+            </summary>
+            <param name="table">The table to load</param>
+            <returns>False if the table was not completely loaded.</returns>
+        </member>
+        <member name="T:ECMPS.DM.Miscellaneous.cErrorHandler">
+            <summary>
+            Static class used to log errors produced by the ECMPS.DM DLL.  
+            
+            The class has a method to initialize a callback method it will call to
+            pass information to the program using a class in the DLL.
+            
+            It also has various methods called to log an error with signatures appropriate
+            for particular situations.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cErrorHandler.Initialized">
+            <summary>
+            Indicates whether the LogErrorCallback has been initialized.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cErrorHandler.Initialize(ECMPS.DM.Definitions.dLogError)">
+            <summary>
+            Initializes cErrorHandler
+            </summary>
+            <param name="logErrorCallback">The log error calback delegate</param>
+            <returns></returns>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cErrorHandler.LogError(System.String)">
+            <summary>
+            Logs error information.
+            </summary>
+            <param name="message">The error message to log.</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cErrorHandler.LogError(System.String,System.String)">
+            <summary>
+            Logs error information.
+            </summary>
+            <param name="message">The error message to log.</param>
+            <param name="detail">Additional detail about the error.</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cErrorHandler.LogError(System.String,System.DateTime,System.Int32)">
+            <summary>
+            Logs error information.
+            </summary>
+            <param name="message">The error message to log.</param>
+            <param name="date">The op date of the data that caused the error.</param>
+            <param name="hour">The op hour of the data that caused the error.</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cErrorHandler.LogError(System.String,System.String,System.DateTime,System.Int32)">
+            <summary>
+            Logs error information.
+            </summary>
+            <param name="message">The error message to log.</param>
+            <param name="detail">Additional detail about the error.</param>
+            <param name="date">The op date of the data that caused the error.</param>
+            <param name="hour">The op hour of the data that caused the error.</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cErrorHandler.LogError(System.String,System.DateTime,System.Int32,System.String)">
+            <summary>
+            Logs error information.
+            </summary>
+            <param name="message">The error message to log.</param>
+            <param name="date">The op date of the data that caused the error.</param>
+            <param name="hour">The op hour of the data that caused the error.</param>
+            <param name="locationKey">The location key of the data that caused the error.</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cErrorHandler.LogError(System.String,System.String,System.DateTime,System.Int32,System.String)">
+            <summary>
+            Logs error information.
+            </summary>
+            <param name="message">The error message to log.</param>
+            <param name="detail">Additional detail about the error.</param>
+            <param name="date">The op date of the data that caused the error.</param>
+            <param name="hour">The op hour of the data that caused the error.</param>
+            <param name="locationKey">The location key of the data that caused the error.</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cErrorHandler.Format(System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.Int32},System.String,System.String)">
+            <summary>
+            Formats the error information for display
+            </summary>
+            <param name="message">The error message to log.</param>
+            <param name="detail">Additional detail about the error.</param>
+            <param name="date">The op date of the data that caused the error.</param>
+            <param name="hour">The op hour of the data that caused the error.</param>
+            <param name="locationKey">The location key of the data that caused the error.</param>
+            <param name="callingMethod">The class and name of the calling method.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cErrorHandler.GetCallingMethod(System.Int32)">
+            <summary>
+            Returns the calling method class and name.
+            </summary>
+            <param name="depth">The depth from the parent.  1 for direct caller</param>
+            <returns>Returns the class name and method name of the indicated caller.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cErrorHandler.GetCallingMethod">
+            <summary>
+            Returns the calling method class and name.
+            </summary>
+            <returns>Returns the class name and method name calling method.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cErrorHandler.LogErrorDo(System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.Int32},System.String)">
+            <summary>
+            Calls the log error callback method if it exists.  
+            
+            Creates a diag message if the callback does not exist or if the callback
+            returns false, indicating that it did not complete correctly.
+            </summary>
+            <param name="message">The error message to log.</param>
+            <param name="detail">Additional detail about the error.</param>
+            <param name="date">The op date of the data that caused the error.</param>
+            <param name="hour">The op hour of the data that caused the error.</param>
+            <param name="locationKey">The location key of the data that caused the error.</param>
+        </member>
+        <member name="T:ECMPS.DM.Miscellaneous.cFactorFormulae">
+            <summary>
+            Contains the factor formulae for a configuration
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulae.#ctor(ECMPS.DM.Utilities.cUnitInfo[],ECMPS.DM.Utilities.cLocationInfo[],System.DateTime,System.Int32,System.DateTime,System.Int32)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="unitInfo">Unit Info</param>
+            <param name="locationInfo">Location Info</param>
+            <param name="beganDate">Began Date</param>
+            <param name="beganHour">Began Hour</param>
+            <param name="endedDate">Ended Date</param>
+            <param name="endedHour">Ended Hour</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulae.#ctor(ECMPS.DM.Utilities.cUnitInfo[],ECMPS.DM.Utilities.cLocationInfo[],System.DateTime,System.Int32,System.DateTime,System.Int32,ECMPS.DM.Miscellaneous.cLocationBoolList)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="unitInfo">Unit Info</param>
+            <param name="locationInfo">Location Info</param>
+            <param name="beganDate">Began Date</param>
+            <param name="beganHour">Began Hour</param>
+            <param name="endedDate">Ended Date</param>
+            <param name="endedHour">Ended Hour</param>
+            <param name="operatingCondition">The operating condition that must match to use this formual.</param>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cFactorFormulae.BeganDate">
+            <summary>
+            The Began Date of the hour range covered by the formulae
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cFactorFormulae.BeganHour">
+            <summary>
+            The Began Hour of the hour range covered by the formulae
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cFactorFormulae.ComplexParameterCount">
+            <summary>
+            The count of Complex Parameter enumerations
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cFactorFormulae.EndedDate">
+            <summary>
+            The Ended Date of the hour range covered by the formulae
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cFactorFormulae.EndedHour">
+            <summary>
+            The Ended Hour of the hour range covered by the formulae
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cFactorFormulae.HiLoadFormulaeGrids">
+            <summary>
+            The array of factor formula grids for each apportionment parameter.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cFactorFormulae.OpTimeFormulaeGrids">
+            <summary>
+            The array of even factor formula grids for each apportionment parameter.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cFactorFormulae.LocationCount">
+            <summary>
+            The count of locations
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cFactorFormulae.LocationInfo">
+            <summary>
+            The Location Info represented by the factor formulae.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cFactorFormulae.OperatingCondition">
+            <summary>
+            The operating condition spec that must exist to use these formulae.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cFactorFormulae.ReduceBy">
+            <summary>
+            The reduce by information for the complex apportionment.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cFactorFormulae.UnitCount">
+            <summary>
+            The count of units
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cFactorFormulae.UnitInfo">
+            <summary>
+            The Unit Info represented by the factor formulae.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cFactorFormulae.UsedInHiLoadFormula">
+            <summary>
+            Indicates whether a particular location is used the formulae
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulae.GetEvenFormula(ECMPS.DM.Definitions.eComplexParameter,System.Int32,System.Int32)">
+            <summary>
+            Gets the even formula for a unit and location.
+            </summary>
+            <param name="complexParameter">The complex parameter of the formula</param>
+            <param name="unitIndex">The count of unit rows</param>
+            <param name="locationIndex">The count of location columns</param>
+            <returns>The factor formula for the unit and location at the given indexes.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulae.GetEvenFormula(ECMPS.DM.Definitions.eComplexParameter,System.String,System.String)">
+            <summary>
+            Gets the even formula for a unit and location.
+            </summary>
+            <param name="complexParameter">The complex parameter of the formula</param>
+            <param name="unitName">The name of the unit for which to return a formula</param>
+            <param name="locationName">The name of the location for which to return a formula</param>
+            <returns>The factor formula for the unit and location at the given indexes.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulae.GetFactorFormula(ECMPS.DM.Definitions.eComplexParameter,System.Int32,System.Int32)">
+            <summary>
+            Gets the factor formula for a unit and location.
+            </summary>
+            <param name="complexParameter">The complex parameter of the formula</param>
+            <param name="unitIndex">The count of unit rows</param>
+            <param name="locationIndex">The count of location columns</param>
+            <returns>The factor formula for the unit and location at the given indexes.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulae.GetFactorFormula(ECMPS.DM.Definitions.eComplexParameter,System.String,System.String)">
+            <summary>
+            Gets the factor formula for a unit and location.
+            </summary>
+            <param name="complexParameter">The complex parameter of the formula</param>
+            <param name="unitName">The name of the unit for which to return a formula</param>
+            <param name="locationName">The name of the location for which to return a formula</param>
+            <returns>The factor formula for the unit and location at the given indexes.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulae.SetFormula(System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Sets a specific factor formula for a unit and location.
+            </summary>
+            <param name="unitIndex">The count of unit rows</param>
+            <param name="locationIndex">The count of location columns</param>
+            <param name="hiLoadFormula">The factor formula for the unit and location at the given indexes.</param>
+            <param name="opTimeFormula">The factor formula for the unit and location at the given indexes.</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulae.SetFormula(System.String,System.String,System.String,System.String)">
+            <summary>
+            Sets a specific factor formula for a unit and location.
+            </summary>
+            <param name="unitName">The name of the unit for which to return a formula</param>
+            <param name="locationName">The name of the location for which to return a formula</param>
+            <param name="hiLoadFormula">The factor formula for the unit and location at the given indexes.</param>
+            <param name="opTimeFormula">The factor formula for the unit and location at the given indexes.</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulae.SetFormula(ECMPS.DM.Definitions.eComplexParameter,System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Sets a specific factor formula for a unit and location.
+            </summary>
+            <param name="complexParameter">The complex parameter of the formula</param>
+            <param name="unitIndex">The count of unit rows</param>
+            <param name="locationIndex">The count of location columns</param>
+            <param name="hiLoadFormula">The factor formula for the unit and location at the given indexes.</param>
+            <param name="opTimeFormula">The factor formula for the unit and location at the given indexes.</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulae.SetFormula(ECMPS.DM.Definitions.eComplexParameter,System.String,System.String,System.String,System.String)">
+            <summary>
+            Sets a specific factor formula for a unit and location.
+            </summary>
+            <param name="complexParameter">The complex parameter of the formula</param>
+            <param name="unitName">The name of the unit for which to return a formula</param>
+            <param name="locationName">The name of the location for which to return a formula</param>
+            <param name="hiLoadFormula">The factor formula for the unit and location at the given indexes.</param>
+            <param name="opTimeFormula">The factor formula for the unit and location at the given indexes.</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulae.UpdateOperatingCondition(System.String,System.Nullable{System.Boolean})">
+            <summary>
+            
+            </summary>
+            <param name="locationName"></param>
+            <param name="operatingCondition"></param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulae.AddReduceBy(System.Int32,System.Int32[])">
+            <summary>
+            Adds a list of reduce by location positions to the spec for all parameters and a specific a location.
+            </summary>
+            <param name="locationPosition">The location to reduce.</param>
+            <param name="reduceByPositions">The locations to reduce by.</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulae.AddReduceBy(System.String,System.String[])">
+            <summary>
+            Adds a list of reduce by location positions to the spec for all parameters and a specific a location.
+            </summary>
+            <param name="locationName">The name of the location to reduce.</param>
+            <param name="reduceByNames">The name of the locations to reduce by.</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulae.AddReduceBy(ECMPS.DM.Definitions.eComplexParameter,System.Int32,System.Int32[])">
+            <summary>
+            Adds a list of reduce by location positions to the spec for a parameter and location.
+            </summary>
+            <param name="complexParameter">The parameter to reduce./</param>
+            <param name="locationPosition">The location to reduce.</param>
+            <param name="reduceByPositions">The locations to reduce by.</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulae.AddReduceBy(ECMPS.DM.Definitions.eComplexParameter,System.String,System.String[])">
+            <summary>
+            Adds a list of reduce by location positions to the spec for a parameter and location.
+            </summary>
+            <param name="complexParameter">The parameter to reduce./</param>
+            <param name="locationName">The name of the location to reduce.</param>
+            <param name="reduceByNames">The name of the locations to reduce by.</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulae.RemoveReduceBy(ECMPS.DM.Definitions.eComplexParameter,System.Int32)">
+            <summary>
+            Remove a list of reduce by location positions.
+            </summary>
+            <param name="complexParameter">The parameter to reduce.</param>
+            <param name="locationPosition">The location to reduce.</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulae.RemoveReduceBy(ECMPS.DM.Definitions.eComplexParameter,System.String)">
+            <summary>
+            Remove a list of reduce by location positions.
+            </summary>
+            <param name="complexParameter">The parameter to reduce.</param>
+            <param name="locationName">The name of the location to reduce.</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulae.ChangeLocationNamesToPositions(System.String)">
+            <summary>
+            Replaces location names in a formula with location positions.
+            </summary>
+            <param name="formula">The formula to manipulate.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulae.CheckHiLoadFormulae(System.Nullable{System.Decimal}[],System.Nullable{ECMPS.DM.Utilities.cCalculator.eCalculatorError}@)">
+            <summary>
+            Check all the HI/Load formulas against the passed factors to determine whether any error occurs.
+            </summary>
+            <param name="factors">The factors to test.</param>
+            <param name="errorResult">Calculation error result.</param>
+            <returns>True if no formulas failed.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulae.SetUsedInHiLoadFormula">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:ECMPS.DM.Miscellaneous.cFactorFormulaeGrid">
+            <summary>
+            Contains a Unit to Location factor formula grid.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulaeGrid.#ctor(ECMPS.DM.Miscellaneous.cFactorFormulae,System.Int32,System.Int32)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="parent">The parent cFactorFormulae object.</param>
+            <param name="unitCount">The number of units in the configuration.</param>
+            <param name="locationCount">The number of locations in the configuration.</param>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cFactorFormulaeGrid.Formulae">
+            <summary>
+            Contains a grid of formulae for producing apportionment factors from a location to a unit.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cFactorFormulaeGrid.LocationCount">
+            <summary>
+            The count of location columns
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cFactorFormulaeGrid.Parent">
+            <summary>
+            The parent cFactorFormulae object.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cFactorFormulaeGrid.UnitCount">
+            <summary>
+            The count of unit rows
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cFactorFormulaeGrid.UsedInFormula">
+            <summary>
+            Contains a grid of elements indicating whether a unit and location combination
+            use a particular location in a formula.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulaeGrid.GetFormula(System.Int32,System.Int32)">
+            <summary>
+            Gets the formula for a unit and location.
+            </summary>
+            <param name="unitIndex">The count of unit rows</param>
+            <param name="locationIndex">The count of location columns</param>
+            <returns>The factor formula for the unit and location at the given indexes.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulaeGrid.GetUsedInFormula(System.Int32,System.Int32)">
+            <summary>
+            Gets the location positions used in the formula for a unit and location.
+            </summary>
+            <param name="unitIndex">The count of unit rows</param>
+            <param name="locationIndex">The count of location columns</param>
+            <returns>The list of location positions used in the formula at the given indexes.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulaeGrid.SetFormula(System.Int32,System.Int32,System.String)">
+            <summary>
+            Sets a specific factor formula for a unit and location.
+            </summary>
+            <param name="unitIndex">The count of unit rows</param>
+            <param name="locationIndex">The count of location columns</param>
+            <param name="formula">The factor formula for the unit and location at the given indexes.</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cFactorFormulaeGrid.SetUsedInFormula(System.Int32,System.Int32,System.String)">
+            <summary>
+            Sets Used In Formula.
+            </summary>
+        </member>
+        <member name="T:ECMPS.DM.Miscellaneous.cLocationBoolList">
+            <summary>
+            Contains a list of bool? for the locations in a report.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cLocationBoolList.#ctor(ECMPS.DM.Utilities.cLocationInfo[])">
+            <summary>
+            Constructor
+            </summary>
+            <param name="locationInfo">List of reduce by locaiton information</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cLocationBoolList.Get(System.Int32)">
+            <summary>
+            Gets the bool? for the passed location position.
+            </summary>
+            <param name="locationPostion">The location position.</param>
+            <returns>The bool? value for the location.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cLocationBoolList.Set(System.Int32,System.Nullable{System.Boolean})">
+            <summary>
+            Sets the bool? value based on the passed location position.
+            </summary>
+            <param name="locationPostion">The location position.</param>
+            <param name="value">The value to set.</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cLocationBoolList.Set(System.String,System.Nullable{System.Boolean})">
+            <summary>
+            Sets the bool? value based on the passed location name.
+            </summary>
+            <param name="locationName">The location name.</param>
+            <param name="value">The value to set.</param>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cLocationBoolList.LocationBoolList">
+            <summary>
+            The list of reduce by location positions.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cLocationBoolList.LocationInfo">
+            <summary>
+            The location info the Reduce By Spec references.
+            </summary>
+        </member>
+        <member name="T:ECMPS.DM.Miscellaneous.cLocationPositionList">
+            <summary>
+            Implemnts a Reduce By Spec, basically a list of locations.
+            
+            Needed to get around not being able to create a int[,][]
+            that implements the way I need it to.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cLocationPositionList.#ctor(System.Int32[])">
+            <summary>
+            Constructor
+            </summary>
+            <param name="locationPositionList">List of reduce by locaiton positions</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cLocationPositionList.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cLocationPositionList.LocationPositionList">
+            <summary>
+            The list of reduce by location positions.
+            </summary>
+        </member>
+        <member name="T:ECMPS.DM.Miscellaneous.cReduceBy">
+            <summary>
+            Indicates the locations whose value should be reduced by another location for a specific complex parameter.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cReduceBy.#ctor(ECMPS.DM.Utilities.cLocationInfo[])">
+            <summary>
+            Constructor for a reduce by spec.
+            </summary>
+            <param name="locationInfo"></param>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cReduceBy.ComplexParameterCount">
+            <summary>
+            The count of Complex Parameter enumerations
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cReduceBy.LocationCount">
+            <summary>
+            The count of locations
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cReduceBy.LocationInfo">
+            <summary>
+            The location info the Reduce By Spec references.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Miscellaneous.cReduceBy.SpecGrid">
+            <summary>
+            The grid of reduce by specs by complex parameter and location dex.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cReduceBy.Add(System.Int32,System.Int32[])">
+            <summary>
+            Adds a list of reduce by location positions to the spec for all parameters and a specific a location.
+            </summary>
+            <param name="locationPosition">The location to reduce.</param>
+            <param name="reduceByPositions">The locations to reduce by.</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cReduceBy.Add(ECMPS.DM.Definitions.eComplexParameter,System.Int32,System.Int32[])">
+            <summary>
+            Adds a list of reduce by location positions to the spec for a parameter and location.
+            </summary>
+            <param name="complexParameter">The parameter to reduce./</param>
+            <param name="locationPosition">The location to reduce.</param>
+            <param name="reduceByPositions">The locations to reduce by.</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cReduceBy.Get(ECMPS.DM.Definitions.eComplexParameter,System.Int32)">
+            <summary>
+            Returns the reduce by location list for the passed parameter and location position.
+            </summary>
+            <param name="complexParameter">The affected parameter.</param>
+            <param name="locationPosition">The location position for potential reduction.</param>
+            <returns>The list of location to reduce by.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cReduceBy.Remove(System.Int32)">
+            <summary>
+            Remove a list of reduce by location positions.
+            </summary>
+            <param name="locationPosition">The location to reduce.</param>
+        </member>
+        <member name="M:ECMPS.DM.Miscellaneous.cReduceBy.Remove(ECMPS.DM.Definitions.eComplexParameter,System.Int32)">
+            <summary>
+            Remove a list of reduce by location positions.
+            </summary>
+            <param name="complexParameter">The parameter to reduce.</param>
+            <param name="locationPosition">The location to reduce.</param>
+        </member>
+        <member name="T:ECMPS.DM.Utilities.cCalculator">
+            <summary>
+            Implements a reverse polish notation calculator
+            </summary>
+        </member>
+        <member name="T:ECMPS.DM.Utilities.cCalculator.eCalculatorError">
+            <summary>
+            Enumerations of the errors returned by cCalculator
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Utilities.cCalculator.eCalculatorError.Index">
+            <summary>
+            Invalid index in formula
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Utilities.cCalculator.eCalculatorError.Value">
+            <summary>
+            Invalid value in formula
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Utilities.cCalculator.eCalculatorError.DivideByZero">
+            <summary>
+            Division by zero
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Utilities.cCalculator.eCalculatorError.Operator">
+            <summary>
+            Unhandled operator
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Utilities.cCalculator.eCalculatorError.OperandCount">
+            <summary>
+            Incorrect number of operands for operator
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Utilities.cCalculator.eCalculatorError.MultipleResults">
+            <summary>
+            Multiple results from formula evaluation
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Utilities.cCalculator.eCalculatorError.UnexpectedCharacter">
+            <summary>
+            Unexpected character found in formula
+            </summary>
+        </member>
+        <member name="F:ECMPS.DM.Utilities.cCalculator.eCalculatorError.Exception">
+            <summary>
+            Unhandled exception
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cCalculator.ErrorDetail">
+            <summary>
+            Error detail
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cCalculator.TrappedException">
+            <summary>
+            Unexpected exception trapped by calculator
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cCalculator.EvaluateReversePolish(System.String,System.Nullable{System.Decimal}[],System.Nullable{ECMPS.DM.Utilities.cCalculator.eCalculatorError}@)">
+            <summary>
+            Evaluates a reverse polish notation formula using a set of values where the formula
+            indicates the position of the values in the value list using the [#] format where #
+            is the position of the value in the value list.
+            </summary>
+            <param name="equation">Reverse polish notation equation.</param>
+            <param name="values">List of values to use in the formula.</param>
+            <param name="errorResult">Error enumeration value.</param>
+            <returns>Return the result of the evaluation, or null if the evaluation failed.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cCalculator.GetIndexUse(System.String)">
+            <summary>
+            Returns a list of indexes in the passed equation.
+            </summary>
+            <param name="equation">The equation to search.</param>
+            <returns>The list of indexes</returns>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cCalculator.NormalizeStandard(System.String,System.String@)">
+            <summary>
+            Normalizes a standard equation
+            </summary>
+            <param name="inputEquation">The equation to normalize.</param>
+            <param name="outputEquation">The normalized equation.</param>
+            <returns>Returns true if the equation was normalized.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cCalculator.StandardToReversePolish(System.String,System.String@)">
+            <summary>
+            Converts standard notation to Reverse Polish notation.
+            </summary>
+            <param name="standardEquation">The equation to convert.</param>
+            <param name="polishEquation">The converted equation.</param>
+            <returns>Returns true if the conversion is successful.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cCalculator.StandardToReversePolish(System.String)">
+            <summary>
+            Converts standard notation to Reverse Polish notation.
+            </summary>
+            <param name="standardEquation">The equation to convert.</param>
+            <returns>The converted equation or null if the conversion failed.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cCalculator.StandardToReversePolishDo(System.String,System.String@)">
+            <summary>
+            Converts normalized standard notation to Reverse Polish notation.
+            </summary>
+            <param name="standardEquation">The equation to convert in normalized standard notation.</param>
+            <param name="polishEquation">The converted location.</param>
+            <returns>Returns true if the conversion is successful.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cCalculator.GetBoundText(System.String,System.Int32@,System.Char,System.Char,System.String@)">
+            <summary>
+            Returns the text bound by the begin and end characters at the character position.
+            </summary>
+            <param name="source">The text to inspect.</param>
+            <param name="charPos">The character position of the beginning bound.</param>
+            <param name="beginChar">The begin bounding character.</param>
+            <param name="endChar">The end bounding chracter.</param>
+            <param name="text">The bounded text.</param>
+            <returns>Returns true if bound text is found.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cCalculator.GetIndex(System.String,System.Int32@,System.Nullable{System.Int32}@)">
+            <summary>
+            Returns the index continaed in the index specifcation at the character position.
+            </summary>
+            <param name="formula">The formula containing the specification.</param>
+            <param name="charPos">The position of the specification.</param>
+            <param name="index">The index in the spec, otherwise null.</param>
+            <returns>True if an index is returned.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cCalculator.GetNumber(System.String,System.Int32@,System.Nullable{System.Decimal}@)">
+            <summary>
+            Returns the numeric value at the character position.
+            </summary>
+            <param name="formula">The formula containing the specification.</param>
+            <param name="charPos">The position of the specification.</param>
+            <param name="number">The valid number, otherwise null if invalid.</param>
+            <returns>True if a value is returned.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cCalculator.GetParentheticContent(System.String,System.Int32@,System.String@)">
+            <summary>
+            Returns the content of an equation within parenthesis.
+            </summary>
+            <param name="equation">The equation.</param>
+            <param name="startPos">The position of the opening parenthesis.</param>
+            <param name="content">The content of the parenthesis.</param>
+            <returns>Returns true if the content was returned.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cCalculator.GetValue(System.String,System.Int32@,System.Nullable{System.Decimal}@)">
+            <summary>
+            Returns the value continaed in the value specifcation at the character position.
+            </summary>
+            <param name="formula">The formula containing the specification.</param>
+            <param name="charPos">The position of the specification.</param>
+            <param name="value">The value in the spec, otherwise null.</param>
+            <returns>True if a value is returned.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cCalculator.IsNumericChar(System.Char)">
+            <summary>
+            Determines whether the passed character is numeric including decimal point.
+            </summary>
+            <param name="character">The character to inspect.</param>
+            <returns>True if the character is numeric.</returns>
+        </member>
+        <member name="T:ECMPS.DM.Utilities.cCombineMeasure">
+            <summary>
+            Used to combine measured values.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cCombineMeasure.CalculatedFound">
+            <summary>
+            Indicates whether there are any 'calculated' measure flags to combine.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cCombineMeasure.LmeFound">
+            <summary>
+            Indicates whether there are any 'lme' measure flags to combine.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cCombineMeasure.MeasuredFound">
+            <summary>
+            Indicates whether there are any 'measured' measure flags to combine.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cCombineMeasure.MeasureAndSubstituteFound">
+            <summary>
+            Indicates whether there are any 'measured and substitute' measure flags to combine.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cCombineMeasure.OtherFound">
+            <summary>
+            Indicates whether there are any 'not applicable' measure flags to combine.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cCombineMeasure.Result">
+            <summary>
+            The current combination of the applied measure codes.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cCombineMeasure.SubstituteFound">
+            <summary>
+            Indicates whether there are any 'substitute' measure flags to combine.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cCombineMeasure.UnavailableFound">
+            <summary>
+            Indicates whether theare are any 'unavailable' (MATS) measure flags to combine.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cCombineMeasure.UpDownFound">
+            <summary>
+            Indicates whether theare are any 'startup/shutdown' (MATS) measure flags to combine.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cCombineMeasure.Combine(System.String)">
+            <summary>
+            Combines the measure flag into the previously combined flags.
+            </summary>
+            <param name="measure">The flag to combine.</param>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cCombineMeasure.CombineAndGet(System.String)">
+            <summary>
+            Combines the measure flag into the previously combined flags
+            and returns the new combined flag.
+            </summary>
+            <param name="measure">The flag to combine.</param>
+            <returns>The new combined value.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cCombineMeasure.CombineAndSet(System.String,System.String@)">
+            <summary>
+            Combines the measure flag into the previously combined flags
+            and returns the new combined flag.
+            </summary>
+            <param name="measure">The flag to combine.</param>
+            <param name="combinedMeasure">The new combined value.</param>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cCombineMeasure.GetCombined(System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Returns the combined flag based on the passed booleans.
+            
+            MATS Unavailable trumps all else with Startup/Shutdown trumping all others.
+            </summary>
+            <param name="measuredFound">True if 'measured' flag found.</param>
+            <param name="substituteFound">True if 'substitute' flag found.</param>
+            <param name="calculatedFound">True if 'measured' flag found.</param>
+            <param name="lmeFound">True if 'lme' flag found.</param>
+            <param name="measureAndSubstituteFound">True if 'measured and substitute' flag found.</param>
+            <param name="otherFound">True if 'other' flag found.</param>
+            <param name="unavailableFound">True if 'unavailable' flag found.</param>
+            <param name="upDownFound">True if 'startup/shutdown' flag found.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cCombineMeasure.GetCombined">
+            <summary>
+            Returns the current combined measure flag for the object.
+            </summary>
+            <returns>The current combined measure flag.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cCombineMeasure.Preview(System.String)">
+            <summary>
+            Returns the combined value that would result when the passed measure is included
+            but does not include the measure.
+            </summary>
+            <param name="measure">The flag to combine.</param>
+            <returns>The potential combined measure flag.</returns>
+        </member>
+        <member name="T:ECMPS.DM.Utilities.cDecimalPlaces">
+            <summary>
+            This class returns the decimal places for parameter values.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cDecimalPlaces.Hit">
+            <summary>
+            The number of decimal places for HIT
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cDecimalPlaces.So2m">
+            <summary>
+            The number of decimal places for SO2M
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cDecimalPlaces.So2r">
+            <summary>
+            The number of decimal places for SO2R
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cDecimalPlaces.Co2m">
+            <summary>
+            The number of decimal places for CO2M
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cDecimalPlaces.Co2r">
+            <summary>
+            The number of decimal places for CO2R
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cDecimalPlaces.Noxm">
+            <summary>
+            The number of decimal places for NOXM
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cDecimalPlaces.Noxr">
+            <summary>
+            The number of decimal places for NOXR
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cDecimalPlaces.Hgm">
+            <summary>
+            The number of decimal places for Hg Mass
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cDecimalPlaces.Hgreo">
+            <summary>
+            The number of decimal places for Hg Electrical Output Rate
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cDecimalPlaces.Hgrhi">
+            <summary>
+            The number of decimal places for Hg Heat Input Rate
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cDecimalPlaces.Hclm">
+            <summary>
+            The number of decimal places for HCl Mass
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cDecimalPlaces.Hclreo">
+            <summary>
+            The number of decimal places for HCl Electrical Output Rate
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cDecimalPlaces.Hclrhi">
+            <summary>
+            The number of decimal places for HCl Heat Input Rate
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cDecimalPlaces.Hfm">
+            <summary>
+            The number of decimal places for HF Mass
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cDecimalPlaces.Hfreo">
+            <summary>
+            The number of decimal places for HF Electrical Output Rate
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cDecimalPlaces.Hfrhi">
+            <summary>
+            The number of decimal places for HF Heat Input Rate
+            </summary>
+        </member>
+        <member name="T:ECMPS.DM.Utilities.cExtensions">
+            <summary>
+            Extensions used within ECMPS.DM
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cExtensions.AsList(ECMPS.DM.Utilities.cLocationInfo[],System.Char)">
+            <summary>
+            Returns cLocationInfo.LocationKey in a cLocationInfo array as a delimited list.
+            </summary>
+            <param name="array">The cLocatiionInfo array to convert.</param>
+            <param name="delimeter">The delimiter of the resulting list.</param>
+            <returns>A delimited string list.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cExtensions.AsList(ECMPS.DM.Utilities.cLocationInfo[])">
+            <summary>
+            Returns cLocationInfo.LocationKey in a cLocationInfo array as a comma delimited list.
+            </summary>
+            <param name="array">The cLocatiionInfo array to convert.</param>
+            <returns>A delimited string list.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cExtensions.DbCode(ECMPS.DM.Definitions.eApportionmentType)">
+            <summary>
+            Returns the database code for the apportionment type enum value.
+            </summary>
+            <param name="value">The enumeration values</param>
+            <returns>Database apportionment code.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cExtensions.DbCode(System.Nullable{ECMPS.DM.Definitions.eApportionmentType})">
+            <summary>
+            Returns the database code for the apportionment type enum value.
+            </summary>
+            <param name="value">The enumeration values</param>
+            <returns>Database apportionment code.</returns>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cExtensions.GetPosition(ECMPS.DM.Utilities.cLocationInfo[],System.String,System.Nullable{System.Int32}@)">
+            <summary>
+            Gets the position of a location name in a location info array.
+            </summary>
+            <param name="array">The location info array</param>
+            <param name="locationName">The name of the location</param>
+            <param name="position">The position of the location in the array, null if it does not exist.</param>
+            <returns>Returns true if the postion was found.</returns>
+        </member>
+        <member name="T:ECMPS.DM.Utilities.cLocationInfo">
+            <summary>
+            Contains the location and unit keys for a location.
+            
+            The unit key will be null if the location is not a unit.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cLocationInfo.#ctor(System.String,System.Nullable{System.Int32},System.String)">
+            <summary>
+            Creates a cLocationInfo object.
+            </summary>
+            <param name="locationKey">The location key of the location.</param>
+            <param name="unitKey">The unit key if the location is a unit.</param>
+            <param name="locationName">The name of the location.</param>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cLocationInfo.LocationKey">
+            <summary>
+            The Location Key of the location.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cLocationInfo.LocationName">
+            <summary>
+            The Name of the location.
+            </summary>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cLocationInfo.UnitKey">
+            <summary>
+            The Unit Key of the location.
+            </summary>
+        </member>
+        <member name="T:ECMPS.DM.Utilities.cUnitInfo">
+            <summary>
+            Contains the location and unit keys for a unit.
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cUnitInfo.#ctor(System.String,System.Nullable{System.Int32},System.String,System.Nullable{System.Int32})">
+            <summary>
+            Create a Unit Info class that stores the location key, unit key, and location position.
+            </summary>
+            <param name="locationKey">The location (MON_LOC_ID) key.</param>
+            <param name="unitKey">The unit (UNIT_ID) key.</param>
+            <param name="unitName">The name of the unit.</param>
+            <param name="locationPosition">The position of the location in Location Info.</param>
+        </member>
+        <member name="P:ECMPS.DM.Utilities.cUnitInfo.LocationPosition">
+            <summary>
+            The location of the unit in Location Info
+            </summary>
+        </member>
+        <member name="T:ECMPS.DM.Utilities.cUtilities">
+            <summary>
+            Contains utility methods used by ECMPS>DM
+            </summary>
+        </member>
+        <member name="M:ECMPS.DM.Utilities.cUtilities.ElapsedDays(System.DateTime,System.DateTime)">
+            <summary>
+            Calculates the number of days elpased between two dates.
+            </summary>
+            <param name="beganDate">The began date of the range.</param>
+            <param name="endedDate">The ended date of the range</param>
+            <returns>The number of elapsed days.</returns>
+        </member>
+    </members>
+</doc>
