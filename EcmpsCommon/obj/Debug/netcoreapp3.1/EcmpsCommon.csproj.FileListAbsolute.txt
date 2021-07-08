@@ -7,3 +7,12 @@ C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\EcmpsCommon\obj\Debug\
 C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\EcmpsCommon\obj\Debug\netcoreapp3.1\EcmpsCommon.csproj.CoreCompileInputs.cache
 C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\EcmpsCommon\obj\Debug\netcoreapp3.1\EcmpsCommon.dll
 C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\EcmpsCommon\obj\Debug\netcoreapp3.1\EcmpsCommon.pdb
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\bin\netcoreapp3.1\EcmpsCommon.deps.json
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\bin\netcoreapp3.1\EcmpsCommon.dll
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\bin\netcoreapp3.1\EcmpsCommon.pdb
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\EcmpsCommon\obj\Debug\netcoreapp3.1\EcmpsCommon.csprojAssemblyReference.cache
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\EcmpsCommon\obj\Debug\netcoreapp3.1\EcmpsCommon.AssemblyInfoInputs.cache
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\EcmpsCommon\obj\Debug\netcoreapp3.1\EcmpsCommon.AssemblyInfo.cs
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\EcmpsCommon\obj\Debug\netcoreapp3.1\EcmpsCommon.csproj.CoreCompileInputs.cache
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\EcmpsCommon\obj\Debug\netcoreapp3.1\EcmpsCommon.dll
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\EcmpsCommon\obj\Debug\netcoreapp3.1\EcmpsCommon.pdb

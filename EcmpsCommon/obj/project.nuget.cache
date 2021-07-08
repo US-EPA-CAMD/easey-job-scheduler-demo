@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "M0vW557HdqZYUGo14GWH5kHMCn6lJ3GMSU3Sr4rwg6g3Jh5Mz/0uqIY/c2OWju1+7bCpdsIA/HunDXL5BQHCNg==",
+  "dgSpecHash": "xe7bOP2ig4uYX7qCdVvCXAzf6nbujfmk5EKuhKpHbneYeqz0SBQp/FYpitDlMAFSJUuVRcREAHzoLyfFbOInJw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\simerahailu\\Documents\\GitHub\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\jwhit\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.2\\microsoft.aspnetcore.app.ref.3.1.2.nupkg.sha512"
+  ],
   "logs": []
 }

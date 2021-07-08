@@ -9,42 +9,22 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Epa.Camd.Easey.JobScheduler
 {
-    [Route("api/[controller]")]
+    [Route("quartz/api/triggers")]
     [ApiController]
     public class TriggerController : ControllerBase
     {
-        // GET: api/<ValuesController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-
-        {
-            cCheckEngine temp = new cCheckEngine();
-            temp.Execute(null);
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<ValuesController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<ValuesController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPost("monitor-plans")]
+        public void TriggerMPEvaluation([FromBody] string value)
         {
         }
 
-        // PUT api/<ValuesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost("qa-certifications")]
+        public void TriggerQAEvaluation([FromBody] string value)
         {
         }
 
-        // DELETE api/<ValuesController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpPost("emissions")]
+        public void TriggerEMEvaluation([FromBody] string value)
         {
         }
     }

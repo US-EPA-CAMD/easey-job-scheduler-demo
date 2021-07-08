@@ -1,25 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\simerahailu\\Documents\\GitHub\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj": {}
+    "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj": {}
   },
   "projects": {
-    "C:\\Users\\simerahailu\\Documents\\GitHub\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj": {
+    "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\simerahailu\\Documents\\GitHub\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj",
+        "projectUniqueName": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj",
         "projectName": "DatabaseAccess",
-        "projectPath": "C:\\Users\\simerahailu\\Documents\\GitHub\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj",
-        "packagesPath": "C:\\Users\\simerahailu\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\simerahailu\\Documents\\GitHub\\easey-job-scheduler\\DatabaseAccess\\obj\\",
+        "projectPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj",
+        "packagesPath": "C:\\Users\\jwhit\\.nuget\\packages\\",
+        "outputPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet\\"
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\simerahailu\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\jwhit\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -31,8 +30,8 @@
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "C:\\Users\\simerahailu\\Documents\\GitHub\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj": {
-                "projectPath": "C:\\Users\\simerahailu\\Documents\\GitHub\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj"
+              "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj": {
+                "projectPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj"
               }
             }
           }
@@ -49,6 +48,10 @@
             "Microsoft.Windows.Compatibility": {
               "target": "Package",
               "version": "[3.1.1, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[5.0.2, )"
             }
           },
           "imports": [
@@ -61,31 +64,36 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.2, 3.1.2]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\simerahailu\\Documents\\GitHub\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj": {
+    "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\simerahailu\\Documents\\GitHub\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj",
+        "projectUniqueName": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj",
         "projectName": "EcmpsCommon",
-        "projectPath": "C:\\Users\\simerahailu\\Documents\\GitHub\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj",
-        "packagesPath": "C:\\Users\\simerahailu\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\simerahailu\\Documents\\GitHub\\easey-job-scheduler\\EcmpsCommon\\obj\\",
+        "projectPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj",
+        "packagesPath": "C:\\Users\\jwhit\\.nuget\\packages\\",
+        "outputPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet\\"
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\simerahailu\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\jwhit\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -117,31 +125,36 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.2, 3.1.2]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\simerahailu\\Documents\\GitHub\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj": {
+    "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\simerahailu\\Documents\\GitHub\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj",
+        "projectUniqueName": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj",
         "projectName": "TypeUtilities",
-        "projectPath": "C:\\Users\\simerahailu\\Documents\\GitHub\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj",
-        "packagesPath": "C:\\Users\\simerahailu\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\simerahailu\\Documents\\GitHub\\easey-job-scheduler\\TypeUtilities\\obj\\",
+        "projectPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj",
+        "packagesPath": "C:\\Users\\jwhit\\.nuget\\packages\\",
+        "outputPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\TypeUtilities\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet\\"
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\simerahailu\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\jwhit\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -153,8 +166,8 @@
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "C:\\Users\\simerahailu\\Documents\\GitHub\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj": {
-                "projectPath": "C:\\Users\\simerahailu\\Documents\\GitHub\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj"
+              "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj": {
+                "projectPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj"
               }
             }
           }
@@ -177,12 +190,18 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.2, 3.1.2]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
         }
       }
     }

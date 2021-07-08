@@ -10,3 +10,15 @@ C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\DatabaseAccess\obj\Deb
 C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\DatabaseAccess\obj\Debug\netcoreapp3.1\DatabaseAccess.csproj.CopyComplete
 C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\DatabaseAccess\obj\Debug\netcoreapp3.1\DatabaseAccess.dll
 C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\DatabaseAccess\obj\Debug\netcoreapp3.1\DatabaseAccess.pdb
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\bin\netcoreapp3.1\DatabaseAccess.dll.config
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\bin\netcoreapp3.1\DatabaseAccess.deps.json
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\bin\netcoreapp3.1\DatabaseAccess.dll
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\bin\netcoreapp3.1\DatabaseAccess.pdb
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\bin\netcoreapp3.1\DatabaseAccess.xml
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\DatabaseAccess\obj\Debug\netcoreapp3.1\DatabaseAccess.csprojAssemblyReference.cache
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\DatabaseAccess\obj\Debug\netcoreapp3.1\DatabaseAccess.AssemblyInfoInputs.cache
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\DatabaseAccess\obj\Debug\netcoreapp3.1\DatabaseAccess.AssemblyInfo.cs
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\DatabaseAccess\obj\Debug\netcoreapp3.1\DatabaseAccess.csproj.CoreCompileInputs.cache
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\DatabaseAccess\obj\Debug\netcoreapp3.1\DatabaseAccess.csproj.CopyComplete
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\DatabaseAccess\obj\Debug\netcoreapp3.1\DatabaseAccess.dll
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\DatabaseAccess\obj\Debug\netcoreapp3.1\DatabaseAccess.pdb

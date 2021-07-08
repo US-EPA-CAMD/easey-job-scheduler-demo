@@ -2,11 +2,15 @@ using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
+using Quartz;
+using Quartz.Impl;
 using SilkierQuartz;
 using Newtonsoft.Json;
 
@@ -51,9 +55,32 @@ namespace Epa.Camd.Easey.JobScheduler
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // services.AddCors(options => {
+            //     options.AddPolicy("CorsPolicy", builder => {
+            //         builder.WithOrigins(
+            //             "http://localhost:3000",
+            //             "https://localhost:3000",
+            //             "https://easey-dev.app.cloud.gov",
+            //             "https://easey-tst.app.cloud.gov"
+            //         )
+            //         .AllowAnyMethod()
+            //         .AllowAnyHeader();
+            //     });
+            // });
+
             services.AddDbContext<NpgSqlContext>(options =>
                 options.UseNpgsql(connectionString)
             );
+
+            services.AddSwaggerGen(c => {
+                c.SwaggerDoc(
+                    "v1",
+                    new OpenApiInfo {
+                        Title = "Quartz Job Management OpenAPI Specification",
+                        Version = "v1",
+                    }
+                );
+            });            
 
             services.AddRazorPages();
             services.AddControllers();
@@ -78,8 +105,6 @@ namespace Epa.Camd.Easey.JobScheduler
                     .AddQuartzJob<SubJob>()
                     .AddQuartzJob<HelloJobAuto>()
                     .AddQuartzJob<HelloJobSingle>();
-
-
           
             //services.AddTransient<MonitorPlanEvaluation>();
         }
@@ -87,6 +112,8 @@ namespace Epa.Camd.Easey.JobScheduler
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            //app.UsePathBase(new PathString("/quartz"));
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -101,6 +128,7 @@ namespace Epa.Camd.Easey.JobScheduler
 
             app.UseAuthentication();
             app.UseSilkierQuartzAuthentication() ;
+            //app.UseCors("CorsPolicy");
             app.UseAuthorization();
 
             app.UseSilkierQuartz(
@@ -125,6 +153,14 @@ namespace Epa.Camd.Easey.JobScheduler
                     #endif
                 }
             );
+
+            app.UseSwagger(c => {
+                c.RouteTemplate = "quartz/api/swagger/{documentname}/swagger.json";
+            });
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/quartz/api/swagger/v1/swagger.json", "v1");
+                c.RoutePrefix = "quartz/api/swagger";
+            });
 
             app.UseEndpoints(endpoints =>
             {

@@ -9,3 +9,14 @@ C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\CheckParameters\obj\De
 C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\CheckParameters\obj\Debug\netcoreapp3.1\CheckParameters.csproj.CopyComplete
 C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\CheckParameters\obj\Debug\netcoreapp3.1\CheckParameters.dll
 C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\CheckParameters\obj\Debug\netcoreapp3.1\CheckParameters.pdb
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\bin\netcoreapp3.1\CheckParameters.deps.json
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\bin\netcoreapp3.1\CheckParameters.dll
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\bin\netcoreapp3.1\CheckParameters.pdb
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\bin\netcoreapp3.1\CheckParameters.xml
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\CheckParameters\obj\Debug\netcoreapp3.1\CheckParameters.csprojAssemblyReference.cache
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\CheckParameters\obj\Debug\netcoreapp3.1\CheckParameters.AssemblyInfoInputs.cache
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\CheckParameters\obj\Debug\netcoreapp3.1\CheckParameters.AssemblyInfo.cs
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\CheckParameters\obj\Debug\netcoreapp3.1\CheckParameters.csproj.CoreCompileInputs.cache
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\CheckParameters\obj\Debug\netcoreapp3.1\CheckParameters.csproj.CopyComplete
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\CheckParameters\obj\Debug\netcoreapp3.1\CheckParameters.dll
+C:\Projects\US-EPA-CAMD\easey-job-scheduler\CheckParameters\obj\Debug\netcoreapp3.1\CheckParameters.pdb

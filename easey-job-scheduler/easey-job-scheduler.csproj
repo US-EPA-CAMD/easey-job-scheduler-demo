@@ -9,9 +9,11 @@
     <PackageReference Include="Quartz" Version="3.3.2" />
     <PackageReference Include="Quartz.AspNetCore" Version="3.3.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="CodeEffects.Rule.Editor.Web.Core" Version="5.0.21.2" />
-    <PackageReference Include="CodeEffects.Rule.Engine.Standard.Trial" Version="5.0.9.8" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.1"/>
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.1.1"/>
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.1.1"/>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.1"/>
     <PackageReference Include="SilkierQuartz" Version="*" />
   </ItemGroup>
   <ItemGroup>
