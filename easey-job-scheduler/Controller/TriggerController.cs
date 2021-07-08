@@ -1,31 +1,53 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ECMPS.Checks.CheckEngine;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using Quartz;
+using SilkierQuartz;
+
+using ECMPS.Checks.CheckEngine;
 
 namespace Epa.Camd.Easey.JobScheduler
 {
-    [Route("quartz/api/triggers")]
-    [ApiController]
-    public class TriggerController : ControllerBase
-    {
-        [HttpPost("monitor-plans")]
-        public void TriggerMPEvaluation([FromBody] string value)
-        {
-        }
+  [Route("quartz/api/triggers")]
+  [ApiController]
+  public class TriggerController : ControllerBase
+  {
+    [HttpPost("monitor-plans")]
+    public void TriggerMPEvaluation([FromBody] EvaluationRequest request) {
+      const string key = "Monitor Plan Evaluation";
+      const string group = "DEFAULT";
+      const string processCode = "MP";
 
-        [HttpPost("qa-certifications")]
-        public void TriggerQAEvaluation([FromBody] string value)
-        {
-        }
+      string jobDesc = "Evaluates a Monitor Plan configuration";
+      string triggerDesc = $"Monitor Plan Configuration: {request.ConfigurationName}, Monitor Plan Id: {request.MonitorPlanId}";
 
-        [HttpPost("emissions")]
-        public void TriggerEMEvaluation([FromBody] string value)
-        {
-        }
+      Services Services = (Services)Request.HttpContext.Items[typeof(Services)];
+      IScheduler Scheduler = Services.Scheduler;
+      IJobDetail job = JobBuilder.Create<cCheckEngine>()
+        .WithIdentity(key, group)
+        .WithDescription(jobDesc)
+        .UsingJobData("ProcessCode", processCode)
+        .Build();
+
+      ITrigger trigger = TriggerBuilder.Create()
+        .WithIdentity($"{key} trigger", group)
+        .WithDescription(triggerDesc)
+        .UsingJobData("MonitorPlanId", request.MonitorPlanId)
+        .UsingJobData("ConfigurationName", request.ConfigurationName)
+        .StartNow()
+        .Build();
+
+      Scheduler.ScheduleJob(job, trigger);
     }
+
+    [HttpPost("qa-certifications")]
+    public void TriggerQAEvaluation([FromBody] string value)
+    {
+    }
+
+    [HttpPost("emissions")]
+    public void TriggerEMEvaluation([FromBody] string value)
+    {
+    }
+  }
 }

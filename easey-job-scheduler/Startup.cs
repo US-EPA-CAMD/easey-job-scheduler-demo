@@ -14,6 +14,7 @@ using Quartz.Impl;
 using SilkierQuartz;
 using Newtonsoft.Json;
 
+using ECMPS.Checks.CheckEngine;
 using Epa.Camd.Easey.RulesApi.Models;
 using Epa.Camd.Easey.JobScheduler.Jobs;
 
@@ -94,17 +95,17 @@ namespace Epa.Camd.Easey.JobScheduler
                 }
                 q.Add("quartz.dataSource.default.connectionString", connectionString);
             }, () => {
-                var type = typeof(HelloJob);
-                var assembly = Assembly.GetAssembly(typeof(HelloJob));
+                var type = typeof(cCheckEngine);
+                var assembly = Assembly.GetAssembly(typeof(cCheckEngine));
                 var list = new List<Assembly>();
                 list.Add(assembly);
                 return list;
             });
 
-            services.AddQuartzJob<HelloJob>()
-                    .AddQuartzJob<SubJob>()
-                    .AddQuartzJob<HelloJobAuto>()
-                    .AddQuartzJob<HelloJobSingle>();
+            // services.AddQuartzJob<HelloJob>()
+            //         .AddQuartzJob<SubJob>()
+            //         .AddQuartzJob<HelloJobAuto>()
+            //         .AddQuartzJob<HelloJobSingle>();
           
             //services.AddTransient<MonitorPlanEvaluation>();
         }
@@ -135,7 +136,7 @@ namespace Epa.Camd.Easey.JobScheduler
                 new SilkierQuartzOptions()
                 {
                     //Logo = "data:wwwroot/EPALogo.svg",
-                    //ProductName = "EPA CAMD Quartz Scheduler",
+                    ProductName = "EPA CAMD Quartz Scheduler",
                     //Scheduler = StdSchedulerFactory.GetDefaultScheduler().Result,
                     VirtualPathRoot = "/quartz",
                     UseLocalTime = true,
