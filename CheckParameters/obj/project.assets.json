@@ -3569,11 +3569,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\CheckParameters\\CheckParameters.csproj",
+      "projectUniqueName": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\CheckParameters\\CheckParameters.csproj",
       "projectName": "CheckParameters",
-      "projectPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\CheckParameters\\CheckParameters.csproj",
+      "projectPath": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\CheckParameters\\CheckParameters.csproj",
       "packagesPath": "C:\\Users\\jwhit\\.nuget\\packages\\",
-      "outputPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\CheckParameters\\obj\\",
+      "outputPath": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\CheckParameters\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -3592,14 +3592,14 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj": {
-              "projectPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj"
+            "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj": {
+              "projectPath": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj"
             },
-            "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj": {
-              "projectPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj"
+            "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj": {
+              "projectPath": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj"
             },
-            "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj": {
-              "projectPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj"
+            "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj": {
+              "projectPath": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj"
             }
           }
         }

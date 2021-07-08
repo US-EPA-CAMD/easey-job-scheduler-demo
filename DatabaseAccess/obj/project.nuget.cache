@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "1MeGmGO6VirTOUWdAqg8UAzVTWCZvBr8wJr1yqmWt7oqfBc++aLctzo8Y6WS8RTptO6cSeQF/ihNXBZImxIHDA==",
+  "dgSpecHash": "mOcQ3hPPUPDYgOz8IzrjVQJnrUqp9+ec0kCVccMyecwTsXZB4k/QqvyXNwazzAOiL552TR7UOORsD/G9AWR/tw==",
   "success": true,
-  "projectFilePath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj",
+  "projectFilePath": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\jwhit\\.nuget\\packages\\microsoft.entityframeworkcore\\5.0.2\\microsoft.entityframeworkcore.5.0.2.nupkg.sha512",
     "C:\\Users\\jwhit\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\5.0.2\\microsoft.entityframeworkcore.abstractions.5.0.2.nupkg.sha512",

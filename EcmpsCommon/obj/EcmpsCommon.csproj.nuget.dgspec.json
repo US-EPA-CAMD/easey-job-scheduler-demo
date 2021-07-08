@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj": {}
+    "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj": {}
   },
   "projects": {
-    "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj": {
+    "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj",
+        "projectUniqueName": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj",
         "projectName": "EcmpsCommon",
-        "projectPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj",
+        "projectPath": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj",
         "packagesPath": "C:\\Users\\jwhit\\.nuget\\packages\\",
-        "outputPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\obj\\",
+        "outputPath": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

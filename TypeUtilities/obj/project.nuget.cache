@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "E9/EuWULzQ7xHcI36q+O1JEAwcL/+MOWWlOaxq+DK0qhqCUIUvbWenJ3gOHD8tmx1NL8bbDvqjDPYkQsOzbzmA==",
+  "dgSpecHash": "9EnK35j/0L3uyXn/alL9snJoPQrDFIr6yakWwYJ7lmMzpPZLdTpR7KwpAnbmfqVZpGXtlK2a0ExNHnX6hG0pEA==",
   "success": true,
-  "projectFilePath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj",
+  "projectFilePath": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\jwhit\\.nuget\\packages\\microsoft.entityframeworkcore\\5.0.2\\microsoft.entityframeworkcore.5.0.2.nupkg.sha512",
     "C:\\Users\\jwhit\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\5.0.2\\microsoft.entityframeworkcore.abstractions.5.0.2.nupkg.sha512",

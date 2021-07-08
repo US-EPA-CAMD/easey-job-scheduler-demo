@@ -18,21 +18,66 @@ using Quartz;
 
 namespace ECMPS.Checks.CheckEngine
 {
-
     /// <summary>
     /// The ECMPS Check Engine 
     /// </summary>
     public class cCheckEngine : IJob
     {
-
-
-
+        /// <summary>
+        /// Description.
+        /// </summary>
+        /// <param name="context">The Quartz JobExecutionContext.</param>
         public void Execute(IJobExecutionContext context)
         {
+            Console.WriteLine("cCheckEngine::Execute START");
 
-            Console.WriteLine("hey");
+            Console.WriteLine("...retrieving job data map");
+            JobDataMap dataMap = context.MergedJobDataMap;
+            string processCode = dataMap.GetString("ProcessCode");
+            string monPlanId = dataMap.GetString("MonitorPlanId");
+            string configurationName = dataMap.GetString("ConfigurationName");
+
+            Console.WriteLine($"...ProcessCode={processCode}");
+            Console.WriteLine($"...MonitorPlanId={monPlanId}");
+            Console.WriteLine($"...ConfigurationName={configurationName}");
+
+            Console.WriteLine("...initializing check egine");
+            cDecimalPrecision.Initialize();
+            UserId = "";
+            DataConnectionString = "";
+            AuxConnectionString = "";
+            WorkspaceConnectionString = "";
+            ChecksDllPath = "";
+            CommandTimeout = 300;
+
+            switch(processCode)
+            {
+                case "MP":
+                    Console.WriteLine("...running RunChecks_MpReport");
+                    //this.RunChecks_MpReport();
+                    System.Threading.Thread.Sleep(30000);
+                    break;
+                case "QA-QCE":
+                    Console.WriteLine("...running RunChecks_QaReport_Qce");
+                    //this.RunChecks_QaReport_Qce();
+                    System.Threading.Thread.Sleep(30000);
+                    break;
+                case "QA-TEE":
+                    Console.WriteLine("...running RunChecks_QaReport_Tee");
+                    //this.RunChecks_QaReport_Tee();
+                    System.Threading.Thread.Sleep(30000);
+                    break;
+                case "EM":
+                    Console.WriteLine("...running RunChecks_EmReport");
+                    //this.RunChecks_EmReport();
+                    System.Threading.Thread.Sleep(30000);
+                    break;
+                default:
+                    throw new Exception("A Process Code of [MP, QA-QCE, QA-TEE, EM] is required and was not provided");
+            }
+
+            Console.WriteLine("cCheckEngine::Execute COMPLETE");
         }
-
 
         #region Public Constructors
 

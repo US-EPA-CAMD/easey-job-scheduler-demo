@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj": {}
+    "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj": {}
   },
   "projects": {
-    "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj": {
+    "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj",
+        "projectUniqueName": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj",
         "projectName": "DatabaseAccess",
-        "projectPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj",
+        "projectPath": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj",
         "packagesPath": "C:\\Users\\jwhit\\.nuget\\packages\\",
-        "outputPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\obj\\",
+        "outputPath": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -30,8 +30,8 @@
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj": {
-                "projectPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj"
+              "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj": {
+                "projectPath": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj"
               }
             }
           }
@@ -79,14 +79,14 @@
         }
       }
     },
-    "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj": {
+    "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj",
+        "projectUniqueName": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj",
         "projectName": "EcmpsCommon",
-        "projectPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj",
+        "projectPath": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\EcmpsCommon.csproj",
         "packagesPath": "C:\\Users\\jwhit\\.nuget\\packages\\",
-        "outputPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\obj\\",
+        "outputPath": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\EcmpsCommon\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -140,14 +140,14 @@
         }
       }
     },
-    "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj": {
+    "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj",
+        "projectUniqueName": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj",
         "projectName": "TypeUtilities",
-        "projectPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj",
+        "projectPath": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\TypeUtilities\\TypeUtilities.csproj",
         "packagesPath": "C:\\Users\\jwhit\\.nuget\\packages\\",
-        "outputPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\TypeUtilities\\obj\\",
+        "outputPath": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\TypeUtilities\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -166,8 +166,8 @@
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj": {
-                "projectPath": "c:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj"
+              "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj": {
+                "projectPath": "C:\\Projects\\US-EPA-CAMD\\easey-job-scheduler\\DatabaseAccess\\DatabaseAccess.csproj"
               }
             }
           }
