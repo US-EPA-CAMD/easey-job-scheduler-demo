@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 using Quartz;
@@ -8,46 +8,82 @@ using ECMPS.Checks.CheckEngine;
 
 namespace Epa.Camd.Easey.JobScheduler
 {
-  [Route("quartz/api/triggers")]
   [ApiController]
+  [Route("quartz/api/triggers")]
+  [Produces("application/json")]  
   public class TriggerController : ControllerBase
   {
-    [HttpPost("monitor-plans")]
-    public void TriggerMPEvaluation([FromBody] EvaluationRequest request) {
-      const string key = "Monitor Plan Evaluation";
-      const string group = "DEFAULT";
-      const string processCode = "MP";
-
-      string jobDesc = "Evaluates a Monitor Plan configuration";
-      string triggerDesc = $"Monitor Plan Configuration: {request.ConfigurationName}, Monitor Plan Id: {request.MonitorPlanId}";
+    private async Task<ActionResult> TriggerEvaluation(
+      string processCode,
+      string group,
+      string key,
+      string jobDesc,
+      string triggerDesc,
+      EvaluationRequest request
+    ) {
 
       Services Services = (Services)Request.HttpContext.Items[typeof(Services)];
       IScheduler Scheduler = Services.Scheduler;
+
       IJobDetail job = JobBuilder.Create<cCheckEngine>()
-        .WithIdentity(key, group)
-        .WithDescription(jobDesc)
+        .WithIdentity("Monitor Plan Evaluation", "DEFAULT")
         .UsingJobData("ProcessCode", processCode)
         .Build();
 
       ITrigger trigger = TriggerBuilder.Create()
-        .WithIdentity($"{key} trigger", group)
-        .WithDescription(triggerDesc)
+        .WithIdentity("Monitor Plan Evaluation", "DEFAULT")
         .UsingJobData("MonitorPlanId", request.MonitorPlanId)
         .UsingJobData("ConfigurationName", request.ConfigurationName)
         .StartNow()
         .Build();
 
-      Scheduler.ScheduleJob(job, trigger);
+      await Scheduler.ScheduleJob(job, trigger);
+
+      return CreatedAtAction("EvaluationResponse)", new {
+        processCode = processCode,
+        facilityId = request.FacilityId,
+        facilityname = request.FacilityName,
+        monitorPlanId = request.MonitorPlanId,
+        configurationName = request.ConfigurationName
+      });
+    }
+
+    [HttpPost("monitor-plans")]
+    public async Task<ActionResult> TriggerMPEvaluation([FromBody] EvaluationRequest request) {
+      return await TriggerEvaluation(
+        "MP",
+        "DEFAULT",
+        "Monitor Plan Evaluation",
+        "Evaluates a Monitor Plan configuration",
+        $"Monitor Plan Configuration: {request.ConfigurationName}, Monitor Plan Id: {request.MonitorPlanId}",
+        request
+      );
     }
 
     [HttpPost("qa-certifications")]
-    public void TriggerQAEvaluation([FromBody] string value)
+    public async Task<ActionResult> TriggerQAEvaluation([FromBody] EvaluationRequest request)
     {
+      return await TriggerEvaluation(
+        "QA",
+        "DEFAULT",
+        "",
+        "",
+        "",
+        request
+      );
     }
 
     [HttpPost("emissions")]
-    public void TriggerEMEvaluation([FromBody] string value)
+    public async Task<ActionResult> TriggerEMEvaluation([FromBody] EvaluationRequest request)
     {
+      return await TriggerEvaluation(
+        "EM",
+        "DEFAULT",
+        "",
+        "",
+        "",
+        request
+      );
     }
   }
 }

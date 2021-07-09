@@ -95,26 +95,25 @@ namespace Epa.Camd.Easey.JobScheduler
                 }
                 q.Add("quartz.dataSource.default.connectionString", connectionString);
             }, () => {
+                var list = new List<Assembly>();
+
                 var type = typeof(cCheckEngine);
                 var assembly = Assembly.GetAssembly(typeof(cCheckEngine));
-                var list = new List<Assembly>();
                 list.Add(assembly);
+
+                type = typeof(MainJob);
+                assembly = Assembly.GetAssembly(typeof(MainJob));
+                list.Add(assembly);
+
                 return list;
             });
 
-            // services.AddQuartzJob<HelloJob>()
-            //         .AddQuartzJob<SubJob>()
-            //         .AddQuartzJob<HelloJobAuto>()
-            //         .AddQuartzJob<HelloJobSingle>();
-          
-            //services.AddTransient<MonitorPlanEvaluation>();
+            services.AddQuartzJob<cCheckEngine>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //app.UsePathBase(new PathString("/quartz"));
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -136,7 +135,7 @@ namespace Epa.Camd.Easey.JobScheduler
                 new SilkierQuartzOptions()
                 {
                     //Logo = "data:wwwroot/EPALogo.svg",
-                    ProductName = "EPA CAMD Quartz Scheduler",
+                    //ProductName = "EPA CAMD Quartz Scheduler",
                     //Scheduler = StdSchedulerFactory.GetDefaultScheduler().Result,
                     VirtualPathRoot = "/quartz",
                     UseLocalTime = true,
@@ -165,7 +164,6 @@ namespace Epa.Camd.Easey.JobScheduler
 
             app.UseEndpoints(endpoints =>
             {
-              //  endpoints.MapRazorPages();
                 endpoints.MapControllers();
             });
         }

@@ -9,3 +9,4 @@ applications:
       - route: ((host))/((path))
     services:
       - camd-pg-db
+    command: dotnet run --project easey-job-scheduler
