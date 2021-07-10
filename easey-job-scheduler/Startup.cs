@@ -2,21 +2,17 @@ using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
-using Quartz;
-using Quartz.Impl;
 using SilkierQuartz;
 using Newtonsoft.Json;
 
 using ECMPS.Checks.CheckEngine;
 using Epa.Camd.Easey.RulesApi.Models;
-using Epa.Camd.Easey.JobScheduler.Jobs;
 
 namespace Epa.Camd.Easey.JobScheduler
 {
@@ -101,9 +97,9 @@ namespace Epa.Camd.Easey.JobScheduler
                 var assembly = Assembly.GetAssembly(typeof(cCheckEngine));
                 list.Add(assembly);
 
-                type = typeof(MainJob);
-                assembly = Assembly.GetAssembly(typeof(MainJob));
-                list.Add(assembly);
+                // type = typeof(MainJob);
+                // assembly = Assembly.GetAssembly(typeof(MainJob));
+                // list.Add(assembly);
 
                 return list;
             });
