@@ -1,0 +1,11 @@
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\bin\netcoreapp3.1\DM.deps.json
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\bin\netcoreapp3.1\DM.dll
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\bin\netcoreapp3.1\DM.pdb
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\bin\netcoreapp3.1\DM.xml
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\DM\obj\Debug\netcoreapp3.1\DM.csprojAssemblyReference.cache
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\DM\obj\Debug\netcoreapp3.1\DM.AssemblyInfoInputs.cache
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\DM\obj\Debug\netcoreapp3.1\DM.AssemblyInfo.cs
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\DM\obj\Debug\netcoreapp3.1\DM.csproj.CoreCompileInputs.cache
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\DM\obj\Debug\netcoreapp3.1\DM.csproj.CopyComplete
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\DM\obj\Debug\netcoreapp3.1\DM.dll
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\DM\obj\Debug\netcoreapp3.1\DM.pdb

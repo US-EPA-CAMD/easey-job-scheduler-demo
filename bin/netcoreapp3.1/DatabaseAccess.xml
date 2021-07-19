@@ -1,0 +1,867 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DatabaseAccess</name>
+    </assembly>
+    <members>
+        <member name="T:ECMPS.Checks.DatabaseAccess.AuxDBDataContext">
+            <summary>
+            Replaces AuxDBDataContext DBML, especially the method calls for stored procedures/functions
+            </summary>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.AuxDBDataContext.#ctor(ECMPS.Checks.DatabaseAccess.cDatabase,System.Int32)">
+            <summary>
+            Creates a DataDBDataContext instance using the cDatabase instance and command timeout defaulted to 30 seconds.
+            </summary>
+            <param name="database">The cDatabase instance for the ECMPS (data) database.</param>
+            <param name="commandTimeout">The default timeout to use for the database.</param>
+        </member>
+        <member name="P:ECMPS.Checks.DatabaseAccess.AuxDBDataContext.CommandTimeout">
+            <summary>
+            The command timeout to use for database commands.
+            </summary>
+        </member>
+        <member name="P:ECMPS.Checks.DatabaseAccess.AuxDBDataContext.Database">
+            <summary>
+            The cDatabase instance to use for datbase connections.
+            </summary>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.AuxDBDataContext.CheckSessionCompleted(System.String,System.String,System.Nullable{System.Char}@,System.String@)">
+            <summary>
+            Calls ECMPS_AUX.Check.CheckSessionCompleted stored procedure.
+            </summary>
+            <param name="chkSessionId">Check Session Id for the current check session.</param>
+            <param name="severityCd">The resulting severity code for the check session.</param>
+            <param name="result">'T' if the update was successful and 'F' if it was not.</param>
+            <param name="errorMessage">The error message produced when the update was not successful.</param>
+            <returns>0</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.AuxDBDataContext.CheckSessionFailed(System.String,System.String,System.Nullable{System.Char}@,System.String@)">
+            <summary>
+            Calls ECMPS_AUX.Check.CheckSessionFailed stored procedure.
+            </summary>
+            <param name="chkSessionId">Check Session Id for the current check session.</param>
+            <param name="errorComment">Error information produced by the Check Engine.</param>
+            <param name="result">'T' if the update was successful and 'F' if it was not.</param>
+            <param name="errorMessage">The error message produced when the update was not successful.</param>
+            <returns>0</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.AuxDBDataContext.CheckSessionInit(System.String,System.String,System.String,System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String,System.String@,System.Nullable{System.Char}@,System.String@)">
+            <summary>
+            Calls ECMPS_AUX.Check.CheckSessionInit stored procedure.
+            </summary>
+            <param name="processCd">Check Process Code for the evaluation.</param>
+            <param name="categoryCd">Check Category Code for the evaluation.</param>
+            <param name="monPlanId">MON_PLAN_ID for the evaluation.</param>
+            <param name="rptPeriodId">RPT_PERIOD_ID for the evaluation, if applicable.</param>
+            <param name="testSumId">TEST_SUM_ID for the evaluation, if applicable.</param>
+            <param name="qaCertEventId">QA_CERT_EVENT_ID for the evaluation, if applicable.</param>
+            <param name="testExtensionExemptionId">TEST_EXTENSION_EXEMPTION_ID for the evaluation, if applicable.</param>
+            <param name="evaluationBeginDate">The evaluation date range begin date.</param>
+            <param name="evaluationEndDate">The evaluation date range end date.</param>
+            <param name="userId">The user id for the user performing the evaluation.</param>
+            <param name="chkSessionId">The Check Session Id for the evaluation.</param>
+            <param name="result">'T' if the update was successful and 'F' if it was not.</param>
+            <param name="errorMessage">The error message produced when the update was not successful.</param>
+            <returns>0</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.AuxDBDataContext.sp_GetNextSessionID(System.Nullable{System.Decimal}@,System.Nullable{System.Char}@,System.String@)">
+            <summary>
+            Calls ECMPS_AUX.dbo.sp_GetNextSessionID stored procedure.
+            </summary>
+            <param name="sessionId"></param>
+            <param name="result"></param>
+            <param name="errorMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ECMPS.Checks.DatabaseAccess.cDatabase">
+            <summary>
+            Database abstration class for SQL Server
+            </summary>
+        </member>
+        <member name="T:ECMPS.Checks.DatabaseAccess.cDatabase.eCatalog">
+            <summary>
+            The catalogs/databases we have available in ECMPS
+            </summary>
+        </member>
+        <member name="F:ECMPS.Checks.DatabaseAccess.cDatabase.eCatalog.DATA">
+            <summary>
+            The "DATA" catalog, i.e. ECMPS
+            </summary>
+        </member>
+        <member name="F:ECMPS.Checks.DatabaseAccess.cDatabase.eCatalog.AUX">
+            <summary>
+            the "AUX" catalog, i.e. ECMPS_AUX
+            </summary>
+        </member>
+        <member name="F:ECMPS.Checks.DatabaseAccess.cDatabase.eCatalog.WORKSPACE">
+            <summary>
+            The "workspace" catalog, i.e. ECMPS_WS
+            </summary>
+        </member>
+        <member name="F:ECMPS.Checks.DatabaseAccess.cDatabase.eCatalog.CHET">
+            <summary>
+            The catalog for CHET 
+            </summary>
+        </member>
+        <member name="F:ECMPS.Checks.DatabaseAccess.cDatabase.eCatalog.MASTER">
+            <summary>
+            The SQL Server's "Master" database
+            </summary>
+        </member>
+        <member name="P:ECMPS.Checks.DatabaseAccess.cDatabase.DefaultCommandTimeout">
+            <summary>
+            The default command timeout (15 minutes)
+            </summary>
+        </member>
+        <member name="F:ECMPS.Checks.DatabaseAccess.cDatabase.m_bInternalError">
+            <summary>
+            Did we catch an error/exception or not
+            </summary>
+        </member>
+        <member name="F:ECMPS.Checks.DatabaseAccess.cDatabase._LastException">
+            <summary>
+            Last exception caught by this class
+            </summary>
+        </member>
+        <member name="F:ECMPS.Checks.DatabaseAccess.cDatabase.m_sLastError">
+            <summary>
+            The last error generated by this class
+            </summary>
+        </member>
+        <member name="P:ECMPS.Checks.DatabaseAccess.cDatabase.StealthMode">
+            <summary>
+            Do we show errors, or are we being stealthy?
+            </summary>
+        </member>
+        <member name="P:ECMPS.Checks.DatabaseAccess.cDatabase.SQLCommand">
+            <summary>
+            The SqlClient.SqlCommand object
+            </summary>
+        </member>
+        <member name="P:ECMPS.Checks.DatabaseAccess.cDatabase.SQLConnection">
+            <summary>
+            The SqlClient.SqlConnection object
+            </summary>
+        </member>
+        <member name="P:ECMPS.Checks.DatabaseAccess.cDatabase.State">
+            <summary>
+            Indicates the state of the SqlConnection.
+            </summary>
+        </member>
+        <member name="P:ECMPS.Checks.DatabaseAccess.cDatabase.DataConnectionString">
+            <summary>
+            Connection string used to connect to ECMPS Data database
+            </summary>
+        </member>
+        <member name="P:ECMPS.Checks.DatabaseAccess.cDatabase.AuxConnectionString">
+            <summary>
+            Connection string used to connect to ECMPS_Aux database
+            </summary>
+        </member>
+        <member name="P:ECMPS.Checks.DatabaseAccess.cDatabase.WorkspaceConnectionString">
+            <summary>
+            Connection string used to connect to ECMPS_WS database
+            </summary>
+        </member>
+        <member name="P:ECMPS.Checks.DatabaseAccess.cDatabase.InternalError">
+            <summary>
+            Was there an internal error? An internal error is trapping an exception!
+            </summary>
+        </member>
+        <member name="P:ECMPS.Checks.DatabaseAccess.cDatabase.LastError">
+            <summary>
+            Get the last error generated by this class
+            </summary>
+        </member>
+        <member name="P:ECMPS.Checks.DatabaseAccess.cDatabase.LastException">
+            <summary>
+            The last exception caught, if any
+            </summary>
+        </member>
+        <member name="P:ECMPS.Checks.DatabaseAccess.cDatabase.ModuleName">
+            <summary>
+            The module/application name to give the connection
+            </summary>
+        </member>
+        <member name="P:ECMPS.Checks.DatabaseAccess.cDatabase.CommandTimeout">
+            <summary>
+            The timeout to assign to the command objects created.
+            Default is 5 minutes
+            </summary>
+        </member>
+        <member name="P:ECMPS.Checks.DatabaseAccess.cDatabase.ConnectionTimeout">
+            <summary>
+            The connection timeout to assign. Default is 15 seconds.
+            Can only be set on new connection objects.
+            </summary>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.GetConnection(ECMPS.Checks.DatabaseAccess.cDatabase.eCatalog,System.Int32,System.String)">
+            <summary>
+            Create a cDatabase object and get a connection to the specified catalog
+            </summary>
+            <param name="initCatalog">The name of the catalog to connect to</param>
+            <param name="nCmdTimeout">The timeout to assign to the command objects created.</param>
+            <param name="sModule">The calling module</param>
+            <returns>A cDatabase object with the connection already opened</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.GetConnection(ECMPS.Checks.DatabaseAccess.cDatabase.eCatalog,System.String)">
+            <summary>
+            Create a cDatabase object and get a connection to the specified catalog
+            </summary>
+            <param name="initCatalog">The name of the catalog to connect to</param>
+            <param name="sModule">The calling module</param>
+            <returns>A cDatabase object with the connection already opened</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.GetConnection(System.String)">
+            <summary>
+            Create a cDatabase object and get a connection to the ECMPS "DATA" catalog
+            </summary>
+            <param name="sModule">The calling module</param>
+            <returns>A cDatabase object with the connection already opened</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.#ctor(System.String)">
+            <summary>
+            Constructor with module name
+            </summary>
+            <param name="sModule">The module/application name to give the connection</param>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.#ctor(System.String,System.Int32)">
+            <summary>
+            Constructor with module name, connection strings, and command timeout
+            </summary>
+            <param name="sModule">The module/application name to give the connection</param>
+            <param name="nCmdTimeout">The timeout to assign to the command objects created.</param>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.Dispose">
+            <summary>
+            Clean up all internal variables/objects
+            </summary>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.Open">
+            <summary>
+            Get a connection to the ECMPS "DATA" database
+            </summary>
+            <returns>True if a connection was made to the ECMPS database, or false if error and LastError will contain error message</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.Open(ECMPS.Checks.DatabaseAccess.cDatabase.eCatalog)">
+            <summary>
+            Get a connection to the ECMPS database for the Initial Catalog in question
+            </summary>
+            <param name="initCatalog">The name of the database to connect to</param>
+            <returns>An open connection to the ECMPS database, or null if error and LastError will contain error message</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.Close">
+            <summary>
+            Attempt to close the connection
+            </summary>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.BeginTransaction">
+            <summary>
+            Begin a transaction on the connection
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.ChangeDatabase(System.String)">
+            <summary>
+            Change the database the connection is currently attached to
+            </summary>
+            <param name="sDBName">The name of the database to change to</param>
+            <returns>True if successful, false if an error occured.</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.ChangeDatabase(ECMPS.Checks.DatabaseAccess.cDatabase.eCatalog)">
+            <summary>
+            Change the database the connection is currently attached to
+            </summary>
+            <param name="initCatalog">The database to change to</param>
+            <returns>True if successful, false if an error occured.</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.CloneDataTable(System.String)">
+            <summary>
+            Returns a cloned table based on the database table or view 
+            with the passed table name.
+            </summary>
+            <param name="tableName">Name of the table or view to clone.</param>
+            <returns>The cloned table.</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.CreateStoredProcedureCommand(System.String)">
+            <summary>
+            Create an SQL command object to run a stored procedure
+            </summary>
+            <param name="sProcName">The stored procedure to be executed</param>
+            <returns>True if successfull, False otherwise</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.CreateStoredProcedureCommand(System.String,System.Data.SqlClient.SqlTransaction)">
+            <summary>
+            Create an SQL command object to run a stored procedure
+            </summary>
+            <param name="sProcName">The stored procedure to be executed</param>
+            <param name="sqlTrans">The SqlTransaction object to associate with this command</param>
+            <returns>True if successfull, False otherwise</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.CreateTextCommand(System.String)">
+            <summary>
+            Create an SQL command object to run the specified SQL query
+            </summary>
+            <param name="sSQL">The query to run</param>
+            <returns>True if successfull, False otherwise</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.CreateTextCommand(System.String,System.Data.SqlClient.SqlTransaction)">
+            <summary>
+            Create an SQL command object to run the specified SQL query
+            </summary>
+            <param name="sSQL">The query to run</param>
+            <param name="sqlTrans">The SqlTransaction object to associate with this command</param>
+            <returns>True if successfull, False otherwise</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.GetDataSet">
+            <summary>
+            Gets a Data.DataSet for the SQL command object
+            </summary>
+            <returns>The DataSet result, or null if an error and LastError will be set</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.GetDataSet(System.String)">
+            <summary>
+            Gets a Data.DataSet for the SQL query supplied
+            </summary>
+            <param name="sSQL">The SQL query to run</param>
+            <returns>The DataSet result, or null if an error and LastError will be set</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.GetDataTable">
+            <summary>
+            Gets a Data.DataTable from the SQL command object
+            </summary>
+            <returns>The DataTable result, or null if an error and LastError will be set</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.GetDataTable(System.String)">
+            <summary>
+            Gets a Data.DataTable from the supplied SQL Statement
+            </summary>
+            <param name="sSQL">The SQL statement to run</param>
+            <returns>The DataTable result, or null if an error and LastError will be set</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.GetTableSchema(System.String,System.String[])">
+            <summary>
+            Get the schema (structure) of a table
+            </summary>
+            <param name="sTableName">The table name in question</param>
+            <param name="columns">the list of columns, or * for all columns</param>
+            <returns>Empty DataTable with table schema information</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.ExecuteScalar(System.String)">
+            <summary>
+            Executes the query, and returns the first column of the first row in the result set returned by the query. Additional columns or rows are ignored
+            </summary>
+            <param name="sSQL">The SQL query to execute</param>
+            <returns>First column of first row in the result set, or null if an error</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.ExecuteScalar">
+            <summary>
+            Executes the query, and returns the first column of the first row in the result set returned by the query. Additional columns or rows are ignored
+            </summary>
+            <returns>First column of first row in the result set, or null if an error</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.ExecuteNonQuery">
+            <summary>
+            Executes a Transact-SQL statement against the connection and returns the number of rows affected
+            </summary>
+            <returns>The number of rows affected</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.ExecuteNonQuery(System.String)">
+            <summary>
+            Executes a Transact-SQL statement against the connection and returns the number of rows affected
+            </summary>
+            <param name="sSQL">The SQL query to execute</param>
+            <returns>The number of rows affected</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.ExecuteReader">
+            <summary>
+            Executes the SQLCommand on the Connection and builds a SqlDataReader. 
+            </summary>
+            <returns>The SqlDataReader result set</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.ExecuteReader(System.String)">
+            <summary>
+            Executes the SQL on the Connection and builds a SqlDataReader. 
+            </summary>
+            <param name="sSQL">The SQL to execute</param>
+            <returns>The SqlDataReader result set</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.AddInputParameter(System.String,System.String)">
+            <summary>
+            Add a string/Varchar2 input parameter to the SQL command object
+            </summary>
+            <param name="sParamName">The name of the parameter</param>
+            <param name="sValue">The value to give the parameter</param>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.AddInputParameter(System.String,System.Int32)">
+            <summary>
+            Add an integer input parameter to the SQL command object
+            </summary>
+            <param name="sParamName">The name of the parameter</param>
+            <param name="nValue">The value to give the parameter</param>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.AddInputParameter(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Add an integer input parameter to the SQL command object
+            </summary>
+            <param name="sParamName">The name of the parameter</param>
+            <param name="nValue">The value to give the parameter</param>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.AddInputParameter(System.String,System.Decimal)">
+            <summary>
+            Add a decimal/numeric input parameter to the SQL command object
+            </summary>
+            <param name="sParamName">The name of the parameter</param>
+            <param name="nValue">The value to give the parameter</param>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.AddInputParameter(System.String,System.DateTime)">
+            <summary>
+            Add a datetime input parameter to the SQL command object
+            </summary>
+            <param name="sParamName">The name of the parameter</param>
+            <param name="dtValue">The value to give the parameter</param>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.AddInputParameter(System.String,System.Nullable{System.DateTime})">
+            <summary>
+            Add an integer input parameter to the SQL command object
+            </summary>
+            <param name="sParamName">The name of the parameter</param>
+            <param name="nValue">The value to give the parameter</param>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.AddInputParameter(System.String,System.Data.SqlDbType,System.Object)">
+            <summary>
+            Add an input parameter to the SQL command object
+            </summary>
+            <param name="sParamName">The name of the parameter</param>
+            <param name="dbType">The SQL database type of the parameter</param>
+            <param name="oValue">The value to give the parameter</param>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.AddInputParameter(System.String,System.Object,System.Type)">
+            <summary>
+            Add an input parameter to the SQL command object
+            </summary>
+            <param name="sParamName">The name of the parameter</param>
+            <param name="oValue">The value to give the parameter</param>
+            <param name="dataType">The datatype of the value</param>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.UpdateParameterValue(System.String,System.Object)">
+            <summary>
+            Update an parameter's value
+            </summary>
+            <param name="sParamName">The name of the parameter</param>
+            <param name="oValue">The value to give the parameter</param>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.AddOutputParameter(System.String,System.Data.SqlDbType)">
+            <summary>
+            Add an output parameter to the SQL command object
+            </summary>
+            <param name="sParamName">The name of the parameter</param>
+            <param name="sqlDbType">The SQL database type of the parameter</param>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.AddOutputParameterString(System.String,System.Int32)">
+            <summary>
+            Add a string/Varchar output parameter to the SQL command object
+            </summary>
+            <param name="sParamName">The name of the parameter</param>
+            <param name="nSize">The size/length of the Varchar parameter</param>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.AddOutputParameterInt(System.String)">
+            <summary>
+            Add a integer output parameter to the SQL command object
+            </summary>
+            <param name="sParamName">The name of the parameter</param>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.AddOutputParameterDateTime(System.String)">
+            <summary>
+            Add a DateTime output parameter to the SQL command object
+            </summary>
+            <param name="sParamName">The name of the parameter</param>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.AddOutputParameterDecimal(System.String)">
+            <summary>
+            Add a decimal output parameter to the SQL command object
+            </summary>
+            <param name="sParamName">The name of the parameter</param>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.GetParameterString(System.String)">
+            <summary>
+            Get the string value of a named parameter from the executed SQL command
+            </summary>
+            <param name="sParamName">The name of the parameter</param>
+            <returns>The string value of the named parameter</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.GetParameterInt(System.String)">
+            <summary>
+            Get the integer value of a named parameter from the executed SQL command
+            </summary>
+            <param name="sParamName">The name of the parameter</param>
+            <returns>The int value of the named parameter</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.GetParameterDateTime(System.String)">
+            <summary>
+            Get the DateTime value of a named parameter from the executed SQL command
+            </summary>
+            <param name="sParamName">The name of the parameter</param>
+            <returns>The DateTime value of the named parameter</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.GetParameterDecimal(System.String)">
+            <summary>
+            Get the integer value of a named parameter from the executed SQL command
+            </summary>
+            <param name="sParamName">The name of the parameter</param>
+            <returns>The int value of the named parameter</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.BulkLoad(System.Data.DataTable,System.String,System.Collections.Generic.List{System.String},System.Data.SqlClient.SqlTransaction,System.String@)">
+            <summary>
+            Bulk load wrapper
+            </summary>
+            <param name="sourceTable">The source data table.</param>
+            <param name="targetTableName">The target table name.</param>
+            <param name="excludeColumnNames">List of column names to exclude from copy.</param>
+            <param name="sqlTransaction">The transaction to use, null if none.</param>
+            <param name="errorMessage">Error message.</param>
+            <returns>True if successful.</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.BulkLoad(System.Data.DataTable,System.String,System.String[],System.Data.SqlClient.SqlTransaction,System.String@)">
+            <summary>
+            Bulk load wrapper
+            </summary>
+            <param name="sourceTable">The source data table.</param>
+            <param name="targetTableName">The target table name.</param>
+            <param name="excludeColumnNames">List of column names to exclude from copy.</param>
+            <param name="sqlTransaction">The transaction to use, null if none.</param>
+            <param name="errorMessage">Error message.</param>
+            <returns>True if successful.</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.BulkLoad(System.Data.DataTable,System.String,System.Data.SqlClient.SqlTransaction,System.String@)">
+            <summary>
+            Bulk load wrapper
+            </summary>
+            <param name="sourceTable">The source data table.</param>
+            <param name="targetTableName">The target table name.</param>
+            <param name="sqlTransaction">The transaction to use, null if none.</param>
+            <param name="errorMessage">Error message.</param>
+            <returns>True if successful.</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.BulkLoad(System.Data.DataTable,System.String,System.Collections.Generic.List{System.String},System.String@)">
+            <summary>
+            Bulk load wrapper
+            </summary>
+            <param name="sourceTable">The source data table.</param>
+            <param name="targetTableName">The target table name.</param>
+            <param name="excludeColumnNames">List of column names to exclude from copy.</param>
+            <param name="errorMessage">Error message.</param>
+            <returns>True if successful.</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.BulkLoad(System.Data.DataTable,System.String,System.String[],System.String@)">
+            <summary>
+            Bulk load wrapper
+            </summary>
+            <param name="sourceTable">The source data table.</param>
+            <param name="targetTableName">The target table name.</param>
+            <param name="excludeColumnNames">List of column names to exclude from copy.</param>
+            <param name="errorMessage">Error message.</param>
+            <returns>True if successful.</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.BulkLoad(System.Data.DataTable,System.String,System.String@)">
+            <summary>
+            Bulk load wrapper
+            </summary>
+            <param name="sourceTable">The source data table.</param>
+            <param name="targetTableName">The target table name.</param>
+            <param name="errorMessage">Error message.</param>
+            <returns>True if successful.</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.ClearScratchSession(ECMPS.Checks.DatabaseAccess.eWorkspaceDataType,System.Decimal,System.Data.SqlClient.SqlTransaction@)">
+            <summary>
+            Clear the scratch tables for the given type
+            </summary>
+            <param name="eType">QA, EM or LME</param>
+            <param name="nSessionId">The id of the session to clear</param>
+            <param name="sqlTransaction">The current SQL transaction.</param>
+            <returns>true if successful, false if error and LastError contains error message</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.ClearScratchSession(ECMPS.Checks.DatabaseAccess.eWorkspaceDataType,System.Decimal)">
+            <summary>
+            Clear the scratch tables for the given type
+            </summary>
+            <param name="eType">QA, EM or LME</param>
+            <param name="nSessionId">The id of the session to clear</param>
+            <returns>true if successful, false if error and LastError contains error message</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.ClearUpdateSession(ECMPS.Checks.DatabaseAccess.eWorkspaceDataType,System.Decimal,System.Data.SqlClient.SqlTransaction@)">
+            <summary>
+            Clear the calc updates tables for the given type
+            </summary>
+            <param name="eType">QA, EM or LME</param>
+            <param name="nSessionId">The id of the session to clear</param>
+            <param name="sqlTransaction">The current SQL transaction.</param>
+            <returns>true if successful, false if error and LastError contains error message</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.ClearUpdateSession(ECMPS.Checks.DatabaseAccess.eWorkspaceDataType,System.Decimal)">
+            <summary>
+            Clear the calc updates tables for the given type
+            </summary>
+            <param name="eType">QA, EM or LME</param>
+            <param name="nSessionId">The id of the session to clear</param>
+            <returns>true if successful, false if error and LastError contains error message</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.MigrateWorkspaceSession(System.Nullable{ECMPS.Checks.DatabaseAccess.eWorkspaceDataType},System.Decimal,System.String,System.Nullable{System.Int32},System.String,System.Data.SqlClient.SqlTransaction@)">
+            <summary>
+            Migrates calculated data from the ECMPS_WS database to the ECMPS database.
+            </summary>
+            <param name="workspaceDataType">The type of data to migrate.</param>
+            <param name="workspaceSessionId">The session id of the data to migrate.</param>
+            <param name="monPlanId">The monitor plan of the data to migrate.</param>
+            <param name="rptPeriodId">The reporting period of the data to migrate.</param>
+            <param name="userId">The user id to associate with the migration.</param>
+            <param name="sqlTransaction">The current SQL transaction.</param>
+            <returns>True if the migration succeded.</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.MigrateWorkspaceSession_EM(System.Decimal,System.String,System.Int32,System.String,System.Data.SqlClient.SqlTransaction@)">
+            <summary>
+            Migrates emissions evaluation calculated data from the workspace
+            schema to the data schema.
+            </summary>
+            <param name="nSessionId">The session id of the data to migrate.</param>
+            <param name="sMonPlanId">The monitor plan of the data to migrate.</param>
+            <param name="iRptPeriodId">The reporting period of the data to migrate.</param>
+            <param name="sUserId">The user id to associate with the migration.</param>
+            <param name="sqlTransaction">The current SQL transaction.</param>
+            <returns>True if the migration succeded.</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.MigrateWorkspaceSession_EMGEN(System.Decimal,System.String,System.Int32,System.Data.SqlClient.SqlTransaction@)">
+            <summary>
+            Migrates data generated for LME from the workspace
+            schema to the data schema.
+            </summary>
+            <param name="sessionId">The session id of the data to migrate.</param>
+            <param name="monPlanId">The monitor plan of the data to migrate.</param>
+            <param name="rptPeriodId">The reporting period of the data to migrate.</param>
+            <param name="sqlTransaction">The current SQL transaction.</param>
+            <returns>True if the migration succeded.</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.MigrateWorkspaceSession_LME(System.Decimal,System.String,System.Int32,System.String,System.Data.SqlClient.SqlTransaction@)">
+            <summary>
+            Migrates data generated for LME from the workspace
+            schema to the data schema.
+            </summary>
+            <param name="nSessionId">The session id of the data to migrate.</param>
+            <param name="sMonPlanId">The monitor plan of the data to migrate.</param>
+            <param name="iRptPeriodId">The reporting period of the data to migrate.</param>
+            <param name="sUserId">The user id to associate with the migration.</param>
+            <param name="sqlTransaction">The current SQL transaction.</param>
+            <returns>True if the migration succeded.</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.MigrateWorkspaceSession_QA(System.Decimal,System.String,System.Data.SqlClient.SqlTransaction@)">
+            <summary>
+            Migrates QA/Test evaluation calculated data from the workspace
+            schema to the data schema.
+            </summary>
+            <param name="nSessionId">The session id of the data to migrate.</param>
+            <param name="sUserId">The user id to associate with the migration.</param>
+            <param name="sqlTransaction">The current SQL transaction.</param>
+            <returns>True if the migration succeded.</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.GetNextSessionID">
+            <summary>
+            Get the next session id to use for an evaluation
+            </summary>
+            <returns>the next session id, or null if error</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.GetSeverityDescription(System.String,System.String)">
+            <summary>
+            Returns the Severity Description associated with the passed Severity Code.
+            </summary>
+            <param name="ASeverityCd">The severity code for which a discription is returned.</param>
+            <param name="ADefault">The default description to use if the passed severity code is not known.</param>
+            <returns>The description associated with the passed severity code.</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.GetSeverityLevel(System.String,System.Int32)">
+            <summary>
+            Returns the Severity Description associated with the passed Severity Level.
+            </summary>
+            <param name="ASeverityCd">The severity code for which a level is returned.</param>
+            <param name="ADefault">The default level to use if the passed severity code is not known.</param>
+            <returns>The level associated with the passed severity code.</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.GetFacilityInfo(ECMPS.Checks.DatabaseAccess.eFacilityLookupType,System.String,System.Nullable{System.Int32}@,System.Nullable{System.Int32}@,System.String@)">
+            <summary>
+            Get facility information based on the id passed.
+            </summary>
+            <param name="lookupType">The type of the passed lookup id</param>
+            <param name="lookupId">The id used to lookup the facility</param>
+            <param name="facId">The FAC_ID of the located facility</param>
+            <param name="firstEcmpsRptPeriodId">The FIRST_ECMPS_RPT_PERIOD_ID of the located facility</param>
+            <param name="errorMessage">Message indicating why a facility was not found</param>
+            <returns>True if the facility was located</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.cDatabase.GetFacilityInfo(ECMPS.Checks.DatabaseAccess.eFacilityLookupType,System.String,System.Nullable{System.Int32}@,System.Nullable{System.Int32}@)">
+            <summary>
+            Get facility information based on the id passed.
+            </summary>
+            <param name="lookupType">The type of the passed lookup id</param>
+            <param name="lookupId">The id used to lookup the facility</param>
+            <param name="facId">The FAC_ID of the located facility</param>
+            <param name="firstEcmpsRptPeriodId">The FIRST_ECMPS_RPT_PERIOD_ID of the located facility</param>
+            <returns>True if the facility was located</returns>
+        </member>
+        <member name="T:ECMPS.Checks.DatabaseAccess.eFacilityLookupType">
+            <summary>
+            The types of ids used to lookup facility information
+            </summary>
+        </member>
+        <member name="F:ECMPS.Checks.DatabaseAccess.eFacilityLookupType.MP">
+            <summary>
+            MON_PLAN_ID
+            </summary>
+        </member>
+        <member name="F:ECMPS.Checks.DatabaseAccess.eFacilityLookupType.ML">
+            <summary>
+            MON_LOC_ID
+            </summary>
+        </member>
+        <member name="F:ECMPS.Checks.DatabaseAccess.eFacilityLookupType.TEST">
+            <summary>
+            TEST_SUM_ID
+            </summary>
+        </member>
+        <member name="F:ECMPS.Checks.DatabaseAccess.eFacilityLookupType.QCE">
+            <summary>
+            QA_CERT_EVENT_ID
+            </summary>
+        </member>
+        <member name="F:ECMPS.Checks.DatabaseAccess.eFacilityLookupType.TEE">
+            <summary>
+            TEST_EXTENSION_EXEMPTION_ID
+            </summary>
+        </member>
+        <member name="F:ECMPS.Checks.DatabaseAccess.eFacilityLookupType.ORIS">
+            <summary>
+            ORIS_CODE
+            </summary>
+        </member>
+        <member name="F:ECMPS.Checks.DatabaseAccess.eFacilityLookupType.FAC">
+            <summary>
+            FAC_ID
+            </summary>
+        </member>
+        <member name="T:ECMPS.Checks.DatabaseAccess.eWorkspaceDataType">
+            <summary>
+            The types of workspace data update by evaluations
+            </summary>
+        </member>
+        <member name="F:ECMPS.Checks.DatabaseAccess.eWorkspaceDataType.QA">
+            <summary>
+            QA/Test Data
+            </summary>
+        </member>
+        <member name="F:ECMPS.Checks.DatabaseAccess.eWorkspaceDataType.EM">
+            <summary>
+            Emissions Data
+            </summary>
+        </member>
+        <member name="F:ECMPS.Checks.DatabaseAccess.eWorkspaceDataType.LME">
+            <summary>
+            LME Data
+            </summary>
+        </member>
+        <member name="F:ECMPS.Checks.DatabaseAccess.eWorkspaceDataType.EMGEN">
+            <summary>
+            Non Operating Emission Generation Data
+            </summary>
+        </member>
+        <member name="T:ECMPS.Checks.DatabaseAccess.DatabaseRelatedExtensions">
+            <summary>
+            Extensions for Database and DataTable type stuff
+            </summary>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.DatabaseRelatedExtensions.GetAuxDBContext(ECMPS.Checks.DatabaseAccess.cDatabase)">
+            <summary>
+            Get a context for the ECMPS_AUX database
+            </summary>
+            <param name="oDBConn">The cDatabase connection to use</param>
+            <returns>New context for the ECMPS_AUX database</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.DatabaseRelatedExtensions.GetDataDBContext(ECMPS.Checks.DatabaseAccess.cDatabase)">
+            <summary>
+            Get a context for the ECMPS database
+            </summary>
+            <param name="oDBConn">The cDatabase connection to use</param>
+            <returns>New context for the ECMPS database</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.DatabaseRelatedExtensions.ToCode(ECMPS.Checks.DatabaseAccess.eWorkspaceDataType)">
+            <summary>
+            Returns the code associated with the Workspace Data Type enumeration member.
+            </summary>
+            <param name="eType">The Workspace Data Type enumeration member.</param>
+            <returns>The associated code.</returns>
+        </member>
+        <member name="T:ECMPS.Checks.DatabaseAccess.DataDBDataContext">
+            <summary>
+            Replaces DataDBDataContext DBML, especially the method calls for stored procedures/functions
+            </summary>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.DataDBDataContext.#ctor(ECMPS.Checks.DatabaseAccess.cDatabase,System.Int32)">
+            <summary>
+            Creates a DataDBDataContext instance using the cDatabase instance and command timeout defaulted to 30 seconds.
+            </summary>
+            <param name="database">The cDatabase instance for the ECMPS (data) database.</param>
+            <param name="commandTimeout">The default timeout to use for the database.</param>
+        </member>
+        <member name="P:ECMPS.Checks.DatabaseAccess.DataDBDataContext.CommandTimeout">
+            <summary>
+            The command timeout to use for database commands.
+            </summary>
+        </member>
+        <member name="P:ECMPS.Checks.DatabaseAccess.DataDBDataContext.Database">
+            <summary>
+            The cDatabase instance to use for datbase connections.
+            </summary>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.DataDBDataContext.GetFacilityInfo(System.String,System.String,System.Nullable{System.Int32}@,System.Nullable{System.Int32}@,System.String@)">
+            <summary>
+            Calls ECMPS.Check.GetFacilityInfo stored procedure.
+            </summary>
+            <param name="lookupType">Lookup Id Type: MP (MON_PLAN_ID), TEST (TEST_SUM_ID), QAC (QA_CERT_EVENT), TEE ()TEST_EXTENSION_EXEMPTION_ID) and ORIS (ORIS_CODE).</param>
+            <param name="lookupId">Lookup Id to use in the lookup.</param>
+            <param name="facId">FAC_ID for the facility.</param>
+            <param name="firstEcmpsRptPeriodId">First ECMPS RPT_PERIOD_ID for the facility.</param>
+            <param name="errorMessage">Message returned if the get failed.</param>
+            <returns></returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.DataDBDataContext.GetInitialValues(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime}@,System.Nullable{System.DateTime}@,System.Nullable{System.Char}@,System.String@)">
+            <summary>
+            Calls ECMPS.CheckMp.GetInitialValues stored procedure.
+            </summary>
+            <param name="monPlanId">MON_PLAN_ID of the monitoring plan being evaluated.</param>
+            <param name="defaultEvaluationEndDate">The default Evaluation End Date (previously determined in ECMPS_Client solution.</param>
+            <param name="evaluationEndDate">The actual Evaluation End Date to use in the evaluation.</param>
+            <param name="maximumFutureDate">The begin date for some monitoring plan elements beyond which they are not evaluated.</param>
+            <param name="result">T if the SP ran successfully, F if it did not.</param>
+            <param name="errorMessage">The message returned when the SP did not run successfully.</param>
+            <returns>0</returns>
+        </member>
+        <member name="M:ECMPS.Checks.DatabaseAccess.DataDBDataContext.GetReportPeriodInfo(System.Nullable{System.Int32},System.Nullable{System.Int32}@,System.Nullable{System.Int32}@,System.String@,System.String@,System.Nullable{System.DateTime}@,System.Nullable{System.DateTime}@,System.Nullable{System.Char}@,System.String@)">
+            <summary>
+            Calls ECMPS.Check.GetReportPeriodInfo stored procedure.
+            </summary>
+            <param name="rptPeriodId">The RPT_PERIOD_ID of the reporting period information to return.</param>
+            <param name="calendarYear">The calendar year of the reporting period.</param>
+            <param name="quarter">The quarter of the reporting period.</param>
+            <param name="periodDescription_in">The description of the reporting period.</param>
+            <param name="periodAbbreviation">The abbreviated description of the reporting period.</param>
+            <param name="beginDate">The begin date of the reporting period.</param>
+            <param name="endDate">The end date of the reporting period.</param>
+            <param name="result">T if the SP ran successfully, F if it did not.</param>
+            <param name="errorMessage">The message returned when the SP did not run successfully.</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

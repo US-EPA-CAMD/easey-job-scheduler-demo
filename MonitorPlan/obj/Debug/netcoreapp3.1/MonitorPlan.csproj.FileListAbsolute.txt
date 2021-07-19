@@ -1,0 +1,4 @@
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\MonitorPlan\obj\Debug\netcoreapp3.1\MonitorPlan.csprojAssemblyReference.cache
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\MonitorPlan\obj\Debug\netcoreapp3.1\MonitorPlan.AssemblyInfoInputs.cache
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\MonitorPlan\obj\Debug\netcoreapp3.1\MonitorPlan.AssemblyInfo.cs
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\MonitorPlan\obj\Debug\netcoreapp3.1\MonitorPlan.csproj.CoreCompileInputs.cache

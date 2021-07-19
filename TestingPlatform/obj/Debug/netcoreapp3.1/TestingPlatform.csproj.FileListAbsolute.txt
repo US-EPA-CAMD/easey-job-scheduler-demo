@@ -1,0 +1,4 @@
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\TestingPlatform\obj\Debug\netcoreapp3.1\TestingPlatform.csprojAssemblyReference.cache
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\TestingPlatform\obj\Debug\netcoreapp3.1\TestingPlatform.AssemblyInfoInputs.cache
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\TestingPlatform\obj\Debug\netcoreapp3.1\TestingPlatform.AssemblyInfo.cs
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\TestingPlatform\obj\Debug\netcoreapp3.1\TestingPlatform.csproj.CoreCompileInputs.cache

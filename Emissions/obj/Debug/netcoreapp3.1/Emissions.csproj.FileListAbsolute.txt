@@ -1,0 +1,4 @@
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\Emissions\obj\Debug\netcoreapp3.1\Emissions.csprojAssemblyReference.cache
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\Emissions\obj\Debug\netcoreapp3.1\Emissions.AssemblyInfoInputs.cache
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\Emissions\obj\Debug\netcoreapp3.1\Emissions.AssemblyInfo.cs
+C:\Users\simerahailu\Documents\GitHub\easey-job-scheduler\Emissions\obj\Debug\netcoreapp3.1\Emissions.csproj.CoreCompileInputs.cache

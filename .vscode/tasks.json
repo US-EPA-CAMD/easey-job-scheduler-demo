@@ -7,7 +7,7 @@
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/easey-job-scheduler.csproj",
+        "${workspaceFolder}/easey-job-scheduler/easey-job-scheduler.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -19,7 +19,7 @@
       "type": "process",
       "args": [
         "publish",
-        "${workspaceFolder}/easey-job-scheduler.csproj",
+        "${workspaceFolder}/easey-job-scheduler/easey-job-scheduler.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -32,7 +32,7 @@
       "args": [
         "watch",
         "run",
-        "${workspaceFolder}/easey-job-scheduler.csproj",
+        "${workspaceFolder}/easey-job-scheduler/easey-job-scheduler.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
