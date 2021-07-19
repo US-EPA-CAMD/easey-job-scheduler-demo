@@ -23,14 +23,36 @@ namespace ECMPS.Checks.DatabaseAccess
         }
 
         /// <summary>
+        /// Creates a DataDBDataContext instance using the NpgDatabase instance and command timeout defaulted to 30 seconds.
+        /// </summary>
+        /// <param name="database">The NpgDatabase instance for the ECMPS (data) database.</param>
+       
+        public AuxDBDataContext(cNpgsqlDatabase database)
+        {
+            NpgDatabase = NpgDatabase;
+            CommandTimeout = 30;
+        }
+
+
+
+
+        /// <summary>
         /// The command timeout to use for database commands.
         /// </summary>
         public int CommandTimeout { get; set; }
 
         /// <summary>
+        /// The cNpgsqlDatabase instance to use for datbase connections.
+        /// </summary>
+        public cNpgsqlDatabase NpgDatabase { get; private set; }
+
+
+
+        /// <summary>
         /// The cDatabase instance to use for datbase connections.
         /// </summary>
         public cDatabase Database { get; private set; }
+
 
 
         /// <summary>
